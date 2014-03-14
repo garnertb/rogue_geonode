@@ -54,6 +54,7 @@ install_requires = [
 
 tests_requires = [
     "lxml==3.3.1",
+    "selenium==2.40.0"
 ]
 
 setup(

@@ -51,10 +51,12 @@ def grab(src, dest, name):
     if download:
         urllib.urlretrieve(str(src), str(dest))
 
-GEOSERVER_URL="http://build.geonode.org/geoserver/latest/geoserver.war"
-ROGUE_GEOSERVER_URL="http://jenkins.rogue.lmnsolutions.com/userContent/geoserver.war"
-DATA_DIR_URL="http://build.geonode.org/geoserver/latest/data.zip"
+
+ROGUE_GEOSERVER_URL="http://jenkins.rogue.lmnsolutions.com/job/geoserver/lastSuccessfulBuild/artifact/geoserver_ext/target/geoserver.war"
+GEOSERVER_URL = ROGUE_GEOSERVER_URL
+DATA_DIR_URL="https://github.com/ROGUE-JCTD/geoserver_data/archive/master.zip"
 JETTY_RUNNER_URL="http://repo2.maven.org/maven2/org/mortbay/jetty/jetty-runner/8.1.8.v20121106/jetty-runner-8.1.8.v20121106.jar"
+GEONODE_GEOSERVER_EXT = "https://github.com/ROGUE-JCTD/rogue-cookbook/raw/master/files/default/geonode-geoserver-ext-2.3-SNAPSHOT.jar"
 
 @task
 @cmdopts([
@@ -94,7 +96,15 @@ def setup_geoserver(options):
         # Set the geonode auth config to dev port 8000
         sh("perl -pi.back -e 's/localhost/localhost:8000/g;' geoserver/data/security/auth/geonodeAuthProvider/config.xml")
 
-        #_install_data_dir()
+        _install_data_dir()
+
+        if GEONODE_GEOSERVER_EXT:
+            _install_geonode_geoserver_ext()
+
+def _install_geonode_geoserver_ext():
+    geoserver_path = path('geoserver')
+    os.chdir(os.path.join(geoserver_path, 'WEB-INF/lib/'))
+    urllib.urlretrieve(GEONODE_GEOSERVER_EXT, str(os.path.basename(GEONODE_GEOSERVER_EXT)))
 
 
 def _install_data_dir():
@@ -110,6 +120,10 @@ def _install_data_dir():
         print 'extracting datadir'
         z = zipfile.ZipFile(data_dir_zip, "r")
         z.extractall(geoserver_dir)
+
+        tmp_path = os.path.join(geoserver_dir, 'geoserver_data-master')
+        if os.path.exists(tmp_path):
+            os.rename(tmp_path, os.path.join(geoserver_dir, 'data'))
 
         config = geoserver_dir / 'data/security/auth/geonodeAuthProvider/config.xml'
         with open(config) as f:
