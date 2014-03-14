@@ -1,0 +1,18 @@
+language: python
+
+python:
+  - "2.7"
+
+before_install:
+  - "sudo apt-get update"
+  - "sudo apt-get install xvfb"
+  - "sudo apt-get install firefox"
+  - "sudo Xvfb :10 -ac &"
+  - "export DISPLAY=:10"
+
+install:
+  - "easy_install install pip==1.4.1"
+  - "pip install -e .[tests]"
+
+script:
+  - "python manage.py test rogue_geonode.core.tests.integration:SeleniumTests"

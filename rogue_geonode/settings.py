@@ -25,7 +25,7 @@ DEBUG_STATIC = False
 
 # This is needed for integration tests, they require
 # geonode to be listening for GeoServer auth requests.
-os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = 'localhost:8080'
+os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = 'localhost:8000'
 
 # Defines settings for development
 DATABASES = {
