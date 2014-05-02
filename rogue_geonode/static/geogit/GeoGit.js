@@ -1,23 +1,24 @@
-var GeoGit = (function() {	
+var GeoGit = (function() {
 	return {
 		geogitApp: null,
 		url: "",
 		workspace: "",
 		store: "",
 		layername: "",
-		
+
 		/*
 		 * GeoGit.History
 		 */
 		History: null,
 		ViewDiff: null,
+        Repo: null,
 		/*
 		 * options: {
 		 * 		historyOptions: {
 		 * 			element,
 		 * 			url,
 		 * 			workspace,
-		 *			store, 
+		 *			store,
 		 *			layername
 		 * 		}
 		 * }
@@ -27,14 +28,18 @@ var GeoGit = (function() {
 			this.workspace = options.workspace;
 			this.store = options.store;
 			this.layername = options.layername;
-			
+
 			if(this.History){
 				this.History.init(options.historyOptions);
 			}
-			
+
 			if(this.ViewDiff){
 				this.ViewDiff.init();
-			}	
+			}
+
+            if(this.Repo){
+				this.Repo.init(options);
+			}
 		}
 	};
 }());

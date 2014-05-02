@@ -77,7 +77,7 @@
     <div class="layer-actions">
       {% include "layers/_actions.html" %}
     </div>
-    <div class="tab-content">
+    <div class="tab-content" ng-app="geogitApp">
 
     {% include "base/resourcebase_info_panel.html" with resourcebase=layer resourcebase_type="layer" %}
 
@@ -117,11 +117,14 @@
             </table>
         {% endif %}
       </article>
-      {% if geoserver.store_type == "GeoGIT" %}
+
       <article id="history" class="tab-pane">
-      {% include "geonode/geogit_history_panel.html" with resourcebase=layer %}
+        {% include "geonode/geogit_history_panel.html" with resourcebase=layer %}
       </article>
-      {% endif %}
+      <article id="geogit-repo" class="tab-pane">
+        {% include "geonode/geogit_repository_panel.html" with resourcebase=layer %}
+      </article>
+
       <!--article id="flag" class="tab-pane">
         <p>Flag this Layer</p>
       </article-->
@@ -236,17 +239,20 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}history/style.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/geogit.css" />
+
     <script src="{{ STATIC_URL }}geogit/GeoGit.js"></script>
     <script src="{{ STATIC_URL }}geogit/lib/History.js"></script>
     <script src="{{ STATIC_URL }}geogit/lib/ViewDiff.js"></script>
+    <script src="{{ STATIC_URL }}geogit/lib/GeoGitService.js"></script>
     <script src="{{ STATIC_URL }}geogit/config/config.js"></script>
     <script src="{{ STATIC_URL }}geogit/controllers/HistoryController.js"></script>
     <script src="{{ STATIC_URL }}geogit/controllers/CommitController.js"></script>
     <script src="{{ STATIC_URL }}geogit/controllers/DiffController.js"></script>
-    <script src="{{ STATIC_URL }}history/geogit-history.js"></script>
+    <script src="{{ STATIC_URL }}geogit/controllers/RepositoryController.js"></script>
+    <script src="{{ STATIC_URL }}history/geogit-history.js"></script>-->
 
-    {% if geoserver.store_type == "GeoGIT" %}
-    <script>
+     <script>
     	$(document).ready(function(){
     		var base_url = new String("{{ GEOSERVER_BASE_URL }}");
     		if(base_url.charAt(base_url.length - 1) !== '/'){
@@ -265,9 +271,9 @@
 
     		GeoGit.init(options);
     		HistoryApp.init();
+            GeoGitService.init();
     	});
     </script>
-    {% endif %}
 
     {% if request.user.is_authenticated %}
         {% user_rating_js request.user layer "layer" %}
