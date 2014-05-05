@@ -1,5 +1,10 @@
 {% load i18n %}
 
 <div  ng-controller="GeogitRepositoryController">
-    <b>{[{test}]}</b>
+
+    <b>Clone URL:</b> {[{cloneUrl}]} <br/>
+    <b>Total Commits: </b>{[{test.totalCommits}]} <br/>
+    <b>Total Authors: </b>{[{test.Authors.totalAuthors}]} <br/>
+
+    {[{test}]}
 </div>
