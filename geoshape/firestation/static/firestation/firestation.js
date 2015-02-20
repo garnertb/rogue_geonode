@@ -36,6 +36,7 @@
 								'Chief',
 								'Other'];
     $scope.forms = [];
+    $scope.message = {};
 					 
 	var getUrl = '/api/v1/capabilities/?firestation='+config.id+'&format=json';
 	$http.get(getUrl).success(function(data){
@@ -78,8 +79,12 @@
 				$http.get(headers('Location')+'?format=json').success(function(data){
 				data.name = data.apparatus + data.id;
 				$scope.forms.push(data);
-				});
-		});
+				}).error(function(data, status) {
+                    $scope.showMessage('There was a problem adding the new record.', 'error');
+                });
+		}).error(function(data, status) {
+                    $scope.showMessage('There was a problem adding the new record.', 'error');
+                });
 	};
 	
 	$scope.UpdateForm = function(form) {
@@ -87,14 +92,35 @@
 			
 			$http.put(updateUrl,form).success(function(data){
 				form.name = form.apparatus + form.id;
-			});
+                $scope.showMessage(form.apparatus + ' staffing has been updated.');
+			}).error(function(data, status) {
+               $scope.showMessage('There was a problem updating the ' + form.apparatus + ' staffing.', 'error');
+            });
 	};
+
+    $scope.showMessage = function(message, message_type) {
+        /*
+        message_type should be one of the bootstrap alert classes (error, success, info, warning, etc.)
+         */
+        var message_class = message_type || 'success';
+
+        $scope.message = {message: message, message_class: message_class};
+        $('#response-capability-message').show();
+
+        setTimeout(function() {
+            $('#response-capability-message').fadeOut('slow');
+            $scope.message = {};
+        }, 4000);
+    };
 	
 	$scope.DeleteForm = function(form) {
 		
 		$http.delete('/api/v1/capabilities/'+form.id+'/?format=json').success(function(data){
             $scope.forms.splice($scope.forms.indexOf(form), 1);
-		});
+            $scope.showMessage(form.apparatus + ' staffing has been deleted.');
+		}).error(function(data, status) {
+            $scope.showMessage('There was an error deleting the staffing for ' + form.apparatus + '.', 'error');
+        });
 
         $('.apparatus-tabs li:nth-last-child(2) a').tab('show');
 	};
