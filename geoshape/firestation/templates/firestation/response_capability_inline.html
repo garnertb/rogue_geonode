@@ -62,12 +62,10 @@
               <input  ng-model="form.chief_officer" name="chief_officer" type="number" ng-minlength="1" ng-maxlength="2">
             </div>
           </div>
-            {[ submitDisabled(form) ]}
           <div class="pull-right">
-            <input type="submit" class="btn btn-success" value="Save" ng-disabled="submitDisabled(form)" class="btn btn-primary"/>
+            <input type="submit" class="btn btn-success" value="Save" ng-disabled="!this['apparatus_' + form.id].$valid || !this['apparatus_' + form.id].$dirty" class="btn btn-primary"/>
             <button type="button" ng-click="DeleteForm(form)" class="btn btn-danger">Delete</button>
           </div>
-          <!--<button ng-click="AddForm()" class="lower_right_button btn btn-primary">Add Form</button>-->
         </form>
     </div>
 </div>
