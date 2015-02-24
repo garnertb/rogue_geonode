@@ -11,7 +11,7 @@
   
   })
 
-  .controller('fireStationController', function($scope, $window, $http) {
+  .controller('fireStationController', function($scope, $window, $http,$animate) {
     
     var thisFirestation = '/api/v1/firestations/'+config.id+'/';
     var options = {
@@ -78,31 +78,28 @@
                 $http.get(headers('Location')+'?format=json').success(function(data){
                 data.name = data.apparatus + data.id;
                 $scope.forms.push(data);
-                $('.apparatus-tabs li:nth-last-child(0) a').tab('show');
                 });
+            $('.apparatus-tabs li:nth-last-child(0) a').tab('show');
         });
     };
     
     $scope.UpdateForm = function(form) {
             var updateUrl = '/api/v1/capabilities/'+form.id+'/?format=json';
-            
             $http.put(updateUrl,form).success(function(data){
                 form.name = form.apparatus + form.id;
             });
     };
     
     $scope.DeleteForm = function(form) {
-        
-        $http.delete('/api/v1/capabilities/'+form.id+'/?format=json').success(function(data){
+        var deleteUrl = '/api/v1/capabilities/'+form.id+'/?format=json';
+        $http.delete(deleteUrl).success(function(data){
             $scope.forms.splice($scope.forms.indexOf(form), 1);
         });
-
         $('.apparatus-tabs li:nth-last-child(2) a').tab('show');
     };
    
    L.marker(config.centroid).addTo($scope.map);
     L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png', {'attribution': '© Mapbox'})
         .addTo($scope.map);
-
   });
 })();

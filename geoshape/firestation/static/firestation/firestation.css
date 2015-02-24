@@ -48,8 +48,10 @@ input.ng-dirty,select.ng-dirty {
 
 }
 
-input.ng-pristine,select.ng-pristine {
-  background-color: #FFFFFF;
+
+
+input.ng-pristine.ng-add,select.ng-pristine.ng-add {
+  background-color: white;
 
 }
 

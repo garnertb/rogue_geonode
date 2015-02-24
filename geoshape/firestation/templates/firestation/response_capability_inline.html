@@ -1,8 +1,7 @@
 <div class="tab-content">
     <div class="tab-pane" id="{[form.id]}" ng-repeat="form in forms" ng-init="previousForm = form"
             ng-class="{'active': $last}">
-        <form class="form-horizontal" name="apparatus_{[ form.id ]}" ng-submit="UpdateForm(form)">
-          <span>{{apparatus_form.id}}</span>
+        <form class="form-horizontal" name="apparatus_{[ form.id ]}" ng-submit="this['apparatus_' + form.id].$setPristine();UpdateForm(form)">
           <div class="control-group">
             <label class="control-label" for="apparatus">Apparatus</label>
             <div class="controls">
@@ -65,10 +64,9 @@
           </div>
             {[ submitDisabled(form) ]}
           <div class="pull-right">
-            <input type="submit" class="btn btn-success" value="Save" ng-disabled="submitDisabled(form)" class="btn btn-primary"/>
+            <input type="submit" class="btn btn-success" value="Save" ng-disabled="!this['apparatus_' + form.id].$valid || !this['apparatus_' + form.id].$dirty" class="btn btn-primary"/>
             <button type="button" ng-click="DeleteForm(form)" class="btn btn-danger">Delete</button>
           </div>
-          <!--<button ng-click="AddForm()" class="lower_right_button btn btn-primary">Add Form</button>-->
         </form>
     </div>
 </div>
