@@ -43,8 +43,18 @@ which moves the window when the user clicks on the link.
   background-color: #eeeeee;
 }
 
+input.ng-dirty, select.ng-dirty {
+  background-color: #dff0d8;
+}
+
+input.ng-pristine.ng-add,select.ng-pristine.ng-add {
+  background-color: white;
+
+}
+
 input.ng-invalid:focus,
 input.ng-invalid {
+  background-color: #FFFFFF;
   color: #b94a48;
   border-color: #ee5f5b;
   box-shadow: 0 0 6px #f8b9b7;
