@@ -2,6 +2,8 @@
 -- PostgreSQL database dump
 --
 
+DROP VIEW IF EXISTS firestations;
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -42,6 +44,7 @@ CREATE VIEW firestations AS
     c.complex_id,
     c.globalid,
     c.geom,
+    'http://192.168.99.100/jurisdictions/firestation/' || c.id AS "URL",
     sum(d.firefighter) AS "Total Firefighters",
     sum(d.firefighter_emt) AS "Total Firefighter/EMTS",
     sum(d.firefighter_paramedic) AS "Total Firefighter/Paramedics",
