@@ -1,4 +1,5 @@
 import logging
+from .forms import ResponseCapabilityForm
 from .models import FireStation, ResponseCapability
 from tastypie import fields
 from tastypie.authentication import SessionAuthentication, ApiKeyAuthentication, MultiAuthentication
@@ -6,6 +7,7 @@ from tastypie.authorization import DjangoAuthorization
 from tastypie.cache import SimpleCache
 from tastypie.constants import ALL
 from tastypie.contrib.gis.resources import ModelResource
+from tastypie.validation import FormValidation
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +45,8 @@ class FireStationResource(ModelResource):
         authorization = DjangoAuthorization()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication())
         cache = SimpleCache()
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
 
 
 class ResponseCapbabilityResource(ModelResource):
@@ -58,3 +62,6 @@ class ResponseCapbabilityResource(ModelResource):
         authorization = DjangoAuthorization()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication())
         filtering = {'firestation': ALL}
+        validation = FormValidation(form_class=ResponseCapabilityForm)
+        list_allowed_methods = ['get', 'post']
+        detail_allowed_methods = ['get', 'put', 'delete']

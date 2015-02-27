@@ -385,6 +385,10 @@ class FireStation(USGSStructureData, FireCaresBase):
     class Meta:
         verbose_name = 'Fire Station'
 
+from django.core.validators import MaxValueValidator
+from django.core.exceptions import ValidationError
+
+
 
 class ResponseCapability(FireCaresBase):
     """
@@ -401,24 +405,22 @@ class ResponseCapability(FireCaresBase):
                          ('Chief', 'Chief'),
                          ('Other', 'Other')]
 
-    int_field_defaults = dict(null=True, blank=True, max_length=2, default=0)
+    int_field_defaults = dict(null=True, blank=True, max_length=2, default=0, validators=[MaxValueValidator(99)])
 
     firestation = models.ForeignKey(FireStation)
     apparatus = models.CharField(choices=APPARATUS_CHOICES, max_length=20, default='Engine')
-    firefighter = models.IntegerField(**int_field_defaults)
-    firefighter_emt = models.IntegerField(verbose_name='Firefighter EMT', **int_field_defaults)
-    firefighter_paramedic = models.IntegerField(verbose_name='Firefighter Paramedic', **int_field_defaults)
-    ems_emt = models.IntegerField(verbose_name='EMS-Only EMT', **int_field_defaults)
-    ems_paramedic = models.IntegerField(verbose_name='EMS-Only Paramedic', **int_field_defaults)
-    officer = models.IntegerField(verbose_name='Company/Unit Officer', **int_field_defaults)
-    officer_paramedic = models.IntegerField(verbose_name='Company/Unit Officer Paramedic', **int_field_defaults)
-    ems_supervisor = models.IntegerField(verbose_name='EMS Supervisor', **int_field_defaults)
-    chief_officer = models.IntegerField(verbose_name='Cheif Officer', **int_field_defaults)
+    firefighter = models.PositiveIntegerField(**int_field_defaults)
+    firefighter_emt = models.PositiveIntegerField(verbose_name='Firefighter EMT', **int_field_defaults)
+    firefighter_paramedic = models.PositiveIntegerField(verbose_name='Firefighter Paramedic', **int_field_defaults)
+    ems_emt = models.PositiveIntegerField(verbose_name='EMS-Only EMT', **int_field_defaults)
+    ems_paramedic = models.PositiveIntegerField(verbose_name='EMS-Only Paramedic', **int_field_defaults)
+    officer = models.PositiveIntegerField(verbose_name='Company/Unit Officer', **int_field_defaults)
+    officer_paramedic = models.PositiveIntegerField(verbose_name='Company/Unit Officer Paramedic', **int_field_defaults)
+    ems_supervisor = models.PositiveIntegerField(verbose_name='EMS Supervisor', **int_field_defaults)
+    chief_officer = models.PositiveIntegerField(verbose_name='Cheif Officer', **int_field_defaults)
 
     def __unicode__(self):
         return '{0} response capability for {1}'.format(self.apparatus, self.firestation)
 
     class Meta:
         verbose_name_plural = 'Response Capabilities'
-
-
