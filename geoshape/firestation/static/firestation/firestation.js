@@ -11,6 +11,28 @@
 
   })
 
+  .controller('jurisdictionController', function($scope) {
+          var options = {
+              boxZoom: false,
+              zoom: 15,
+              zoomControl: false,
+              attributionControl: false,
+              scrollWheelZoom: false,
+              doubleClickZoom: false,
+              fullscreenControl: false
+          };
+          $scope.map = L.map('map', options)
+          var countyBoundary = L.geoJson(config.geom, {
+                                  style: function (feature) {
+                                      return {color: "#0000ff"};
+                                  }
+                              }).addTo($scope.map);
+          $scope.map.fitBounds(countyBoundary.getBounds());
+
+          L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png',
+              {'attribution': '© Mapbox'}).addTo($scope.map);
+      })
+
   .controller('fireStationController', function($scope, $window, $http) {
 
           var thisFirestation = '/api/v1/firestations/' + config.id + '/';
@@ -30,7 +52,7 @@
           $scope.forms = [];
           $scope.message = {};
 
-          var getUrl = '/api/v1/capabilities/?firestation=' + config.id + '&format=json';
+          var getUrl = '/api/v1/staffing/?firestation=' + config.id + '&format=json';
           $http.get(getUrl).success(function(data) {
               for (var iForm = 0; iForm < data.meta.total_count; iForm++) {
                   data.objects[iForm].name = data.objects[iForm].apparatus + data.objects[iForm].id;
@@ -72,7 +94,7 @@
                   'officer_paramedic': 0
               };
 
-              var postUrl = '/api/v1/capabilities/?format=json';
+              var postUrl = '/api/v1/staffing/?format=json';
               $http.post(postUrl, newForm).success(function(data, status, headers) {
                   $http.get(headers('Location') + '?format=json').success(function(data) {
                       data.name = data.apparatus + data.id;
@@ -87,7 +109,7 @@
           };
 
           $scope.UpdateForm = function(form) {
-              var updateUrl = '/api/v1/capabilities/' + form.id + '/?format=json';
+              var updateUrl = '/api/v1/staffing/' + form.id + '/?format=json';
               $http.put(updateUrl, form).success(function(data) {
                   form.name = form.apparatus + form.id;
                   $scope.showMessage(form.apparatus + ' staffing has been updated.');
@@ -102,7 +124,7 @@
 
           $scope.DeleteForm = function(form) {
 
-              $http.delete('/api/v1/capabilities/' + form.id + '/?format=json').success(function(data) {
+              $http.delete('/api/v1/staffing/' + form.id + '/?format=json').success(function(data) {
                   $scope.forms.splice($scope.forms.indexOf(form), 1);
                   $scope.showMessage(form.apparatus + ' staffing has been deleted.');
                   $scope.showLastTab();

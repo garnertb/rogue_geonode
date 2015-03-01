@@ -1,9 +1,9 @@
 from django.forms import ModelForm, IntegerField
-from .models import ResponseCapability
+from .models import Staffing
 
 
-class ResponseCapabilityForm(ModelForm):
+class StaffingForm(ModelForm):
 
     class Meta:
-        model = ResponseCapability
+        model = Staffing
         exclude = ['firestation']

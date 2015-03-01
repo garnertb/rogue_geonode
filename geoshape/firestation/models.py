@@ -6,18 +6,12 @@ import us
 
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
+from django.core.validators import MaxValueValidator
+from django.core.urlresolvers import reverse
 from django.db.transaction import rollback
 from django.db.utils import IntegrityError
-
-
-class FireCaresBase(models.Model):
-    """
-    Provides common attributes/methods to FireCares models.
-    """
-
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-
+from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
 
 class USGSStructureData(models.Model):
     """
@@ -125,6 +119,9 @@ class USGSStructureData(models.Model):
                          (6, 'Municipal'),
                          (7, 'Private')]
 
+
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     objectid = models.IntegerField(unique=True, null=True, blank=True)
     permanent_identifier = models.CharField(max_length=40, null=True, blank=True)
     source_featureid = models.CharField(max_length=40, null=True, blank=True)
@@ -164,160 +161,30 @@ class USGSStructureData(models.Model):
         ordering = ('state', 'city', 'name')
 
 
-class Jurisdiction(FireCaresBase):
+class FireDepartment(models.Model):
     """
-    Models the organizational units such as cities, counties, etc that have many fire stations.
+    Models Fire Departments.
     """
 
-    STATES_CHOICES = [(state.abbr, state.name) for state in us.states.STATES]
+    name = models.CharField(max_length=100)
+    fips = models.CharField(max_length=10, blank=True, null=True, unique=True)
+    state = models.CharField(max_length=2)
+    content_type = models.ForeignKey(ContentType)
 
-    FCODE_CHOICES = [(61200, 'County'),
-                     (61201, 'Borough'),
-                     (61210, 'City and Borough'),
-                     (61202, 'District'),
-                     (61203, 'Independent City'),
-                     (61204, 'Island'),
-                     (61205, 'Judicial Division'),
-                     (61206, 'Municipality'),
-                     (61207, 'Municipio'),
-                     (61208, 'Parish'),
-                     (61299, 'Other County Equivalent Area')]
+    # Allow the FD model to be tied to various types of USGS geospatial objects (ie Counties, Cities, Reservations, etc)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    DATA_SECURITY_CHOICES = [(0, 'Unknown'),
-                             (1, 'Top Secret'),
-                             (2, 'Secret'),
-                             (3, 'Confidential'),
-                             (4, 'Restricted'),
-                             (5, 'Unclassified'),
-                             (6, 'Sensitive')]
-
-    DISTRIBUTION_POLICY_CHOICES = [('A1', 'Emergency Service Provider - Internal Use Only'),
-                                   ('A2', 'Emergency Service Provider - Bitmap Display Via Web'),
-                                   ('A3', 'Emergency Service Provider - Free Distribution to Third Parties'),
-                                   ('A4', 'Emergency Service Provider - Free Distribution to Third Parties Via '
-                                          'Internet'),
-                                   ('B1', 'Government Agencies or Their Delegated Agents - Internal Use Only'),
-                                   ('B2', 'Government Agencies or Their Delegated Agents - Bitmap Display Via Web'),
-                                   ('B3', 'Government Agencies or Their Delegated Agents - Free Distribution to Third '
-                                          'Parties'),
-                                   ('B4', 'Government Agencies or Their Delegated Agents - Free Distribution to Third '
-                                          'Parties Via Internet'),
-                                   ('C1', 'Other Public or Educational Institutions - Internal Use Only'),
-                                   ('C2', 'Other Public or Educational Institutions - Bitmap Display Via Web'),
-                                   ('C3', 'Other Public or Educational Institutions - Free Distribution to Third '
-                                          'Parties'),
-                                   ('C4', 'Other Public or Educational Institutions - Free Distribution to Third '
-                                          'Parties Via Internet'),
-                                   ('D1', 'Data Contributors - Internal Use Only'), ('D2', 'Data Contributors - '
-                                                                                           'Bitmap Display Via Web'),
-                                   ('D3', 'Data Contributors - Free Distribution to Third Parties'),
-                                   ('D4', 'Data Contributors - Free Distribution to Third Parties Via Internet'),
-                                   ('E1', 'Public Domain - Internal Use Only'), ('E2', 'Public Domain - Bitmap '
-                                                                                       'Display Via Web'),
-                                   ('E3', 'Public Domain - Free Distribution to Third Parties'),
-                                   ('E4', 'Public Domain - Free Distribution to Third Parties Via Internet')]
-
-    objectid = models.IntegerField(unique=True, null=True, blank=True)
-    permanent_identifier = models.CharField(max_length=40, null=True, blank=True)
-    source_featureid = models.CharField(max_length=40, null=True, blank=True)
-    source_datasetid = models.CharField(max_length=40, null=True, blank=True)
-    source_datadesc = models.CharField(max_length=100, null=True, blank=True)
-    source_originator = models.CharField(max_length=130, null=True, blank=True)
-    data_security = models.IntegerField(blank=True, null=True, choices=DATA_SECURITY_CHOICES)
-    distribution_policy = models.CharField(max_length=4, choices=DISTRIBUTION_POLICY_CHOICES, null=True, blank=True)
-    loaddate = models.DateTimeField(null=True, blank=True)
-    ftype = models.CharField(blank=True, null=True, max_length=50)
-    fcode = models.IntegerField(blank=True, null=True, choices=FCODE_CHOICES)
-    state_fipscode = models.CharField(max_length=2, null=True, blank=True)
-    state_name = models.CharField(max_length=120, null=True, blank=True)
-    county_fipscode = models.CharField(max_length=3, null=True, blank=True)
-    county_name = models.CharField(max_length=120, null=True, blank=True)
-    population = models.IntegerField(blank=True, null=True)
-    gnis_id = models.CharField(max_length=10, null=True, blank=True)
-    fips = models.CharField(max_length=10, blank=True, null=True)
-    globalid = models.CharField(max_length=38, null=True, blank=True)
-    geom = models.PolygonField()
-
+    geom = models.PolygonField(null=True, blank=True)
     objects = models.GeoManager()
 
-    @property
-    def origin_uri(self):
-        """
-        This object's URI (from the national map).
-        """
-        return 'http://services.nationalmap.gov/arcgis/rest/services/govunits/MapServer/13/{0}?f=json' \
-            .format(self.objectid)
 
-    @classmethod
-    def load_data(cls):
-        from django.contrib.gis.geos import LinearRing, Polygon
-        objects = requests.get('http://services.nationalmap.gov/arcgis/rest/services/govunits/MapServer/13/query?'
-                               'where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&'
-                               'spatialRel=esriSpatialRelIntersects&relationParam=&outFields=&returnGeometry=true&'
-                               'maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=true&returnCountOnly=false&'
-                               'orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&'
-                               'gdbVersion=&returnDistinctValues=false&f=json')
-
-        current_ids = set(cls.objects.all().values_list('objectid', flat=True))
-        object_ids = set(json.loads(objects.content)['objectIds']) - current_ids
-        url = 'http://services.nationalmap.gov/arcgis/rest/services/govunits/MapServer/13/{0}?f=json'
-
-        for object in object_ids:
-            try:
-
-                if cls.objects.filter(objectid=object):
-                    continue
-
-                obj = requests.get(url.format(object))
-                obj = json.loads(obj.content)
-                data = dict((k.lower(), v) for k, v in obj['feature']['attributes'].iteritems())
-
-                for key in data.keys():
-                    if key not in [field.name for field in cls._meta.fields]:
-                        data.pop(key)
-
-                if obj['feature'].get('geometry'):
-                    poly = map(LinearRing, obj['feature']['geometry']['rings'])
-                    data['geom'] = Polygon(*poly)
-
-                data['loaddate'] = datetime.datetime.fromtimestamp(data['loaddate']/1000.0)
-                feat = cls.objects.create(**data)
-                feat.save()
-                print 'Saved object: {0}'.format(data.get('name'))
-                print '{0} Counties loaded.'.format(cls.objects.all().count())
-
-            except KeyError:
-                print '{0} failed.'.format(object)
-                print url.format(object)
-
-            except IntegrityError:
-                print '{0} failed.'.format(object)
-                print url.format(object)
-                print sys.exc_info()
-
-                try:
-                    rollback()
-                except:
-                    pass
-
-            except:
-                print '{0} failed.'.format(object)
-                print url.format(object)
-                print sys.exc_info()
-
-    class Meta:
-        ordering = ('state_name', 'county_name')
-
-    def __unicode__(self):
-        return u'{name}, {state}'.format(name=self.county_name, state=self.state_name)
-
-
-class FireStation(USGSStructureData, FireCaresBase):
+class FireStation(USGSStructureData):
     """
     Fire Stations.
     """
 
-    jurisdiction = models.ForeignKey(Jurisdiction, null=True, blank=True)
+    department = models.ForeignKey(FireDepartment, null=True, blank=True)
     fips = models.CharField(max_length=10, blank=True, null=True)
     station_number = models.IntegerField(null=True, blank=True)
     district = models.PolygonField(null=True, blank=True)
@@ -382,15 +249,13 @@ class FireStation(USGSStructureData, FireCaresBase):
                 print url.format(object)
                 print sys.exc_info()
 
+    def get_detail_url(self):
+        return reverse('firestation_detail', kwargs=dict(pk=self.id))
+
     class Meta:
         verbose_name = 'Fire Station'
 
-from django.core.validators import MaxValueValidator
-from django.core.exceptions import ValidationError
-
-
-
-class ResponseCapability(FireCaresBase):
+class Staffing(models.Model):
     """
     Models response capabilities (apparatus and responders).
     """
@@ -407,6 +272,8 @@ class ResponseCapability(FireCaresBase):
 
     int_field_defaults = dict(null=True, blank=True, max_length=2, default=0, validators=[MaxValueValidator(99)])
 
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     firestation = models.ForeignKey(FireStation)
     apparatus = models.CharField(choices=APPARATUS_CHOICES, max_length=20, default='Engine')
     firefighter = models.PositiveIntegerField(**int_field_defaults)

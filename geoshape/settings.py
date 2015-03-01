@@ -122,7 +122,9 @@ INSTALLED_APPS = (
     'django_classification_banner',
     'maploom',
     'iaff_geoshape',
-    'geoshape.firestation'
+    'geoshape.usgs',
+    'geoshape.firestation',
+
 ) + INSTALLED_APPS
 
 LOGGING = {

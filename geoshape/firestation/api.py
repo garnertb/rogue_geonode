@@ -1,6 +1,6 @@
 import logging
-from .forms import ResponseCapabilityForm
-from .models import FireStation, ResponseCapability
+from .forms import StaffingForm
+from .models import FireStation, Staffing
 from tastypie import fields
 from tastypie.authentication import SessionAuthentication, ApiKeyAuthentication, MultiAuthentication
 from tastypie.authorization import DjangoAuthorization
@@ -49,7 +49,7 @@ class FireStationResource(ModelResource):
         detail_allowed_methods = ['get']
 
 
-class ResponseCapbabilityResource(ModelResource):
+class StaffingResource(ModelResource):
     """
     The ResponseCapability API.
     """
@@ -57,11 +57,11 @@ class ResponseCapbabilityResource(ModelResource):
     firestation = fields.ForeignKey(FireStationResource, 'firestation')
 
     class Meta:
-        resource_name = 'capabilities'
-        queryset = ResponseCapability.objects.all()
+        resource_name = 'staffing'
+        queryset = Staffing.objects.all()
         authorization = DjangoAuthorization()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication())
         filtering = {'firestation': ALL}
-        validation = FormValidation(form_class=ResponseCapabilityForm)
+        validation = FormValidation(form_class=StaffingForm)
         list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'delete']
