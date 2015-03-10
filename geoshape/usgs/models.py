@@ -164,7 +164,6 @@ class Reserve(USGSBase):
     geom = models.PolygonField()
 
 
-
 class NativeAmericanArea(USGSBase):
     service_id = 12
     nativeamericanreservation_fcode = [(64000, u'Native American Reservation'), (64080, u'Tribal Designated Statistic Area'), (64081, u'Colony'), (64082, u'Community'), (64083, u'Joint Use Area'), (64084, u'Pueblo'), (64085, u'Rancheria'), (64086, u'Reservation'), (64087, u'Reserve'), (64088, u'Oklahoma Tribal Statistical Area'), (64089, u'American Indian Trust Land'), (64090, u'Joint Use Oklahoma Tribal Statistical Area'), (64091, u'Ranch'), (64092, u'State Designated American Indian Statistical Area'), (64093, u'Indian Village'), (64095, u'Indian Community'), (64096, u'American Indian Off-Reservation Trust Land')]
@@ -177,6 +176,9 @@ class NativeAmericanArea(USGSBase):
     population = models.IntegerField(null=True, blank=True)
     geom = models.PolygonField()
 
+    @property
+    def fips(self):
+        return self.nativeamericanarea_fipscode
 
 
 class CountyorEquivalent(USGSBase):
@@ -194,10 +196,14 @@ class CountyorEquivalent(USGSBase):
 
     @property
     def fips(self):
-        return self.state_fipscode
+        return self.stco_fipscode
+
+    @property
+    def name(self):
+        return self.county_name
 
     class Meta:
-        verbose_name = 'County (or Equvalent)'
+        verbose_name = 'County (or Equivalent)'
 
     def __unicode__(self):
         return u'{name}, {state}'.format(name=self.county_name, state=self.state_name)
@@ -222,6 +228,10 @@ class IncorporatedPlace(USGSBase):
     def fips(self):
         return self.place_fipscode
 
+    @property
+    def name(self):
+        return self.place_name
+
     class Meta:
         ordering = ('state_name', 'place_name', )
 
@@ -241,6 +251,9 @@ class UnincorporatedPlace(USGSBase):
     def fips(self):
         return self.place_fipscode
 
+    @property
+    def name(self):
+        return self.place_name
 
 
 class MinorCivilDivision(USGSBase):
@@ -258,6 +271,9 @@ class MinorCivilDivision(USGSBase):
     def fips(self):
         return self.minorcivildivision_fipscode
 
+    @property
+    def name(self):
+        return self.minorcivildivision_name
 
 
 class StateorTerritoryHigh(USGSBase):
@@ -273,6 +289,10 @@ class StateorTerritoryHigh(USGSBase):
     @property
     def fips(self):
         return self.state_fipscode
+
+    @property
+    def name(self):
+        return self.state_name
 
 class CongressionalDistrict(USGSBase):
     service_id = 19

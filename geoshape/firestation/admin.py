@@ -19,7 +19,9 @@ class FireStationInline(admin.TabularInline):
 
 
 class FireDepartmentAdmin(admin.OSMGeoAdmin):
-    inlines = [FireStationInline]
+    search_fields = ['name']
+    list_display = ['name', 'state']
+    list_filter = ['state']
 
 
 class ResponseCapabilityAdmin(admin.OSMGeoAdmin):

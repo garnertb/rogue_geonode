@@ -14,8 +14,8 @@
 
      <script type="text/javascript">
     var config = {
-      geom: {{ object.geom.json|safe }},
-      centroid: [{{ object.geom.centroid.y }}, {{ object.geom.centroid.x }}],
+      geom: {{ object.geom.json|safe|default:"null" }},
+      centroid: [{{ object.headquarters_address.geom.centroid.y }}, {{ object.headquarters_address.geom.centroid.x }}],
       id: {{object.id}}
     }
     </script>
@@ -25,47 +25,89 @@
 {% block body_outer %}
     <div class="container" ng-controller="jurisdictionController" ng-app="fireStation">
         <div class="row">
-            <div class="span12"></div>
-               <div class="span12">
-                <h2>Fire Stations in {{ object.state_name }}</h2>
+            <div class="span12 firestation-breadcrumb">
+              <a href="{% url 'firedepartment_list' %}">Departments</a> &middot; <a href="{% url 'firedepartment_list' object.headquarters_address.state_province|lower %}/">{{ object.headquarters_address.state_province }}</a> &middot; {{ object.name }}
                 <hr/>
+            </div>
 
-                <aside class="span4 pull-right">
-                    <div class="well map-well">
-                        <div id="map" style="height:200px"></div>
-                        <address>
-                            {{ object.county_name }}, {{ object.state }}
-                        </address>
-                    </div>
+            <div class="span12">
+                <div id="map" style="height:300px"></div>
+            </div>
+               <div class="span12">
+               <div class="fire-station-header span7">
+                <h3>{{ object.name }}</h3>
+                <address class="header-address">{{ object.headquarters_address.get_row_display }}</address>
+                <span class="header-extra">
+                    <span class="header-extra-attribute"><b>FDID:</b> {{ object.fdid }} </span> &middot;
+                    <span class="header-extra-attribute"><b>Department Type:</b> {{ object.department_type }}</span>
+                </span>
+               </div>
+
+                <aside class="span4 pull-right" style="margin-top: 20px;">
                     <div>
                      <table class="table station-detail-table table-bordered table-striped">
                       <tbody>
-                        <tr>
-                          <td class="station-detail-table-attribute">Type</td>
-                          <td>{{ object.get_fcode_display }}</td>
+                      <tr>
+                          <td class="station-detail-table-attribute">Organization Type</td>
+                          <td>{{ object.organization_type }}</td>
                         </tr>
-                        <tr>
-                          <td class="station-detail-table-attribute">State</td>
-                          <td>{{ object.state_name }}</td>
-                        </tr>
-                        <tr>
-                          <td class="station-detail-table-attribute">Estimated Population</td>
-                          <td>{{ object.population | intcomma }}</td>
-                        </tr>
-                        <tr>
-                          <td class="station-detail-table-attribute">FIPS</td>
-                          <td>{{ object.fips }}</td>
+                      {% if object.headquarters_phone %}
+                      <tr>
+                          <td class="station-detail-table-attribute">Phone</td>
+                          <td>
+                              {% if object.headquarters_fax %}
+                              <a href="tel:{{ object.headquarters_phone }}">{{ object.headquarters_phone }}</a>
+                              {% else %}
+                                  None
+                              {% endif %}
+                          </td>
+                      </tr>
+                      {% endif %}
+                      {% if object.headquarters_fax %}
+                      <tr>
+                          <td class="station-detail-table-attribute">Fax</td>
+                          <td>
+                          {% if object.headquarters_fax %}
+                            <a href="fax:{{ object.headquarters_fax }}">{{ object.headquarters_fax }}</a>
+                          {% else %}
+                              None
+                          {% endif %}
+                          </td>
+                      </tr>
+                      {% endif %}
+                      <tr>
+                          <td class="station-detail-table-attribute">City</td>
+                          <td>{{ object.headquarters_address.city }}, {{ object.headquarters_address.state_province }}</td>
                         </tr>
                       </tbody>
                     </table>
                     </div>
+
+                    {% if object.website %}
+                        <a href="{{ object.website }}" target="_blank">Department Website</a>
+                    {% endif %}
                 </aside>
-                <div class="span7 well">
-                   <ul>
-                    {% for station in firestations %}
-                       <li><a href="{{ station.get_detail_url }}">{{ station.name }}</a></li>
-                    {% endfor %}
-                   </ul>
+                <div class="span7">
+                   <h4>Stations</h4>
+                {% if object.firestation_set.all %}
+                   <p>Fire Stations for this department.</p>
+                    <table class="table">
+                      <thead>
+                      <tr>
+                          <td><b>Station Name</b></td>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      {% for station in object.firestation_set.all %}
+                          <tr>
+                              <td><a href="{{ station.get_absolute_url }}">{{ station.name }}</a></td>
+                          </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                {% else %}
+                    <p>No stations loaded for this department.</p>
+                {% endif %}
                 </div>
                </div>
 

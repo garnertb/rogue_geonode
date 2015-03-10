@@ -18,47 +18,27 @@ SET search_path = public, pg_catalog;
 --
 
 CREATE VIEW firestations AS
- SELECT c.id,
-    c.objectid,
-    c.permanent_identifier,
-    c.source_featureid,
-    c.source_datasetid,
-    c.source_datadesc,
-    c.source_originator,
-    c.data_security,
-    c.distribution_policy,
-    c.loaddate,
-    c.ftype,
-    c.fcode,
-    c.name,
-    c.islandmark,
-    c.pointlocationtype,
-    c.admintype,
-    c.addressbuildingname,
-    c.address,
-    c.city,
-    c.state,
-    c.zipcode,
-    c.gnis_id,
-    c.foot_id,
-    c.complex_id,
-    c.globalid,
-    c.geom,
-    'http://192.168.99.100/jurisdictions/firestation/' || c.id AS "URL",
-    sum(d.firefighter) AS "Total Firefighters",
-    sum(d.firefighter_emt) AS "Total Firefighter/EMTS",
-    sum(d.firefighter_paramedic) AS "Total Firefighter/Paramedics",
-    sum(d.ems_emt) AS "Total EMS only EMTs",
-    sum(d.ems_paramedic) AS "Total EMS only Paramedics",
-    sum(d.officer) AS "Total Officers",
-    sum(d.officer_paramedic) AS "Total Officer/Paramedics",
-    sum(d.ems_supervisor) AS "Total EMS Supervisors",
-    sum(d.chief_officer) AS "Total Chief Officers"
-   FROM (((firestation_firecaresbase a
-     JOIN firestation_firestation b ON ((a.id = b.firecaresbase_ptr_id)))
-     JOIN firestation_usgsstructuredata c ON ((b.usgsstructuredata_ptr_id = c.id)))
-     JOIN firestation_responsecapability d ON ((c.id = d.firestation_id)))
-  GROUP BY c.id;
+ SELECT
+    a.name,
+    a.address,
+    a.city,
+    a.state,
+    a.zipcode,
+    a.geom,
+    'http://192.168.99.100/jurisdictions/fire-stations/' || a.id AS "URL",
+    COALESCE(sum(d.firefighter), 0) AS "Total Firefighters",
+    COALESCE(sum(d.firefighter_emt), 0) AS "Total Firefighter/EMTS",
+    COALESCE(sum(d.firefighter_paramedic), 0) AS "Total Firefighter/Paramedics",
+    COALESCE(sum(d.ems_emt), 0) AS "Total EMS only EMTs",
+    COALESCE(sum(d.ems_paramedic), 0) AS "Total EMS only Paramedics",
+    COALESCE(sum(d.officer), 0) AS "Total Officers",
+    COALESCE(sum(d.officer_paramedic), 0) AS "Total Officer/Paramedics",
+    COALESCE(sum(d.ems_supervisor), 0) AS "Total EMS Supervisors",
+    COALESCE(sum(d.chief_officer), 0) AS "Total Chief Officers"
+   FROM (firestation_usgsstructuredata a
+     JOIN firestation_firestation b ON (b.usgsstructuredata_ptr_id = a.id)
+     LEFT JOIN firestation_staffing d ON (b.usgsstructuredata_ptr_id = d.firestation_id))
+  GROUP BY a.id;
 
 
 --

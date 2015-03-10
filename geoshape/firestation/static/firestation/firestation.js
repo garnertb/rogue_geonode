@@ -13,21 +13,26 @@
 
   .controller('jurisdictionController', function($scope) {
           var options = {
-              boxZoom: false,
+              boxZoom: true,
               zoom: 15,
-              zoomControl: false,
+              zoomControl: true,
               attributionControl: false,
               scrollWheelZoom: false,
               doubleClickZoom: false,
               fullscreenControl: false
           };
-          $scope.map = L.map('map', options)
-          var countyBoundary = L.geoJson(config.geom, {
+          $scope.map = L.map('map', options);
+          if (config.geom != null) {
+           var countyBoundary = L.geoJson(config.geom, {
                                   style: function (feature) {
-                                      return {color: "#0000ff"};
+                                      return {color: '#0000ff'};
                                   }
                               }).addTo($scope.map);
           $scope.map.fitBounds(countyBoundary.getBounds());
+          } else {
+              L.marker(config.centroid).addTo($scope.map);
+              $scope.map.setView(config.centroid, 13);
+          }
 
           L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png',
               {'attribution': '© Mapbox'}).addTo($scope.map);
@@ -37,9 +42,9 @@
 
           var thisFirestation = '/api/v1/firestations/' + config.id + '/';
           var options = {
-              boxZoom: false,
+              boxZoom: true,
               zoom: 15,
-              zoomControl: false,
+              zoomControl: true,
               attributionControl: false,
               scrollWheelZoom: false,
               doubleClickZoom: false,
@@ -60,7 +65,7 @@
               $scope.forms = data.objects;
           });
 
-          $scope.map = L.map('map', options).setView(config.centroid, 13);
+          $scope.map = L.map('map', options).setView(config.centroid, 15);
           L.marker(config.centroid).addTo($scope.map);
 
           L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png',

@@ -122,8 +122,12 @@ INSTALLED_APPS = (
     'django_classification_banner',
     'maploom',
     'iaff_geoshape',
+    'geoshape.firecares_core',
     'geoshape.usgs',
     'geoshape.firestation',
+    'phonenumber_field',
+    'jsonfield',
+    'bootstrap_pagination',
 
 ) + INSTALLED_APPS
 
@@ -196,6 +200,7 @@ LOGGING = {
 
 TEMPLATE_CONTEXT_PROCESSORS += (
     'django_classification_banner.context_processors.classification',
+    'django.core.context_processors.request',
 )
 
 if 'django.middleware.clickjacking.XFrameOptionsMiddleware' not in MIDDLEWARE_CLASSES:

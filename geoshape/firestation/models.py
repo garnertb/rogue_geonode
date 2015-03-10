@@ -2,7 +2,11 @@ import datetime
 import json
 import requests
 import sys
+import csv
+import os
 import us
+
+from .managers import PriorityDepartmentsManager
 
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
@@ -12,6 +16,10 @@ from django.db.transaction import rollback
 from django.db.utils import IntegrityError
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from geoshape.firecares_core.models import Address
+from phonenumber_field.modelfields import PhoneNumberField
+from geoshape.firecares_core.models import Country
+
 
 class USGSStructureData(models.Model):
     """
@@ -161,35 +169,183 @@ class USGSStructureData(models.Model):
         ordering = ('state', 'city', 'name')
 
 
+    @classmethod
+    def count_differential(cls):
+        """
+        Reports the count differential between the upstream service and this table.
+        """
+        url = 'http://services.nationalmap.gov/arcgis/rest/services/govunits/MapServer/{0}/query?' \
+              'where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&' \
+              'spatialRel=esriSpatialRelIntersects&relationParam=&outFields=&returnGeometry=true' \
+              '&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=true&orderByFields=' \
+              '&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&' \
+              'returnDistinctValues=false&f=pjson'
+
+        response = requests.get(url.format(cls.service_id))
+
+        if response.ok:
+            response_js = json.loads(response.content)
+            upstream_count = response_js.get('count')
+
+            if upstream_count:
+                local_count = cls.objects.all().count()
+                print 'The upstream service has: {0} features.'.format(upstream_count)
+                print 'The local model {1} has: {0} features.'.format(local_count, cls.__name__)
+                return local_count - upstream_count
+
+
 class FireDepartment(models.Model):
     """
     Models Fire Departments.
     """
 
+    DEPARTMENT_TYPE_CHOICES = [
+        ('Volunteer', 'Volunteer'),
+        ('Mostly Volunteer', 'Mostly Volunteer'),
+        ('Career', 'Career'),
+        ('Mostly Career', 'Mostly Career'),
+
+    ]
+
+    created = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(auto_now=True)
+    fdid = models.CharField(max_length=10)
     name = models.CharField(max_length=100)
-    fips = models.CharField(max_length=10, blank=True, null=True, unique=True)
+    headquarters_address = models.ForeignKey(Address, null=True, blank=True, related_name='firedepartment_headquarters')
+    mail_address = models.ForeignKey(Address, null=True, blank=True)
+    headquarters_phone = PhoneNumberField(null=True, blank=True)
+    headquarters_fax = PhoneNumberField(null=True, blank=True)
+    department_type = models.CharField(max_length=20, choices=DEPARTMENT_TYPE_CHOICES, null=True, blank=True)
+    organization_type = models.CharField(max_length=75, null=True, blank=True)
+    website = models.URLField(null=True, blank=True)
     state = models.CharField(max_length=2)
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType, null=True, blank=True)
 
     # Allow the FD model to be tied to various types of USGS geospatial objects (ie Counties, Cities, Reservations, etc)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    content_object = generic.GenericForeignKey()
 
     geom = models.PolygonField(null=True, blank=True)
     objects = models.GeoManager()
+    priority_departments = PriorityDepartmentsManager()
+
+    class Meta:
+        ordering = ('state', 'name')
+
+    @property
+    def fips(self):
+        return self.content_object.fips
+
+    @property
+    def population(self):
+        return self.content_object.population
+
+    def set_geometry_from_jurisdiction(self):
+        if hasattr(self.content_object, 'geom'):
+            self.geom = self.content_object.geom
+            self.save()
+
+    @classmethod
+    def load_from_usfa_csv(cls):
+        """
+        Loads Fire Departments from http://apps.usfa.fema.gov/census-download.
+        """
+        us, _ = Country.objects.get_or_create(name='United States of America', iso_code='US')
+
+        with open(os.path.join(os.path.dirname(__file__), 'scripts/usfa-census-national.csv'), 'r') as csvfile:
+
+            # This only runs once, since there isn't a good key to identify duplicates
+            if not cls.objects.all().count():
+                reader = csv.DictReader(csvfile)
+                counter = 0
+                for row in reader:
+                    # only run once.
+                    hq_address_params = {}
+                    hq_address_params['address_line1'] = row.get('HQ Addr1')
+                    hq_address_params['address_line2'] = row.get('HQ Addr2')
+                    hq_address_params['city'] = row.get('HQ City')
+                    hq_address_params['state_province'] = row.get('HQ State')
+                    hq_address_params['postal_code'] = row.get('HQ Zip')
+                    hq_address_params['country'] = us
+                    headquarters_address, _ = Address.objects.get_or_create(**hq_address_params)
+                    headquarters_address.save()
+
+                    mail_address_params = {}
+                    mail_address_params['address_line1'] = row.get('Mail Addr1')
+                    mail_address_params['address_line2'] = row.get('Mail Addr2') or row.get('Mail PO Box')
+                    mail_address_params['city'] = row.get('Mail City')
+                    mail_address_params['state_province'] = row.get('Mail State')
+                    mail_address_params['postal_code'] = row.get('Mail Zip')
+                    mail_address_params['country'] = us
+                    mail_address, _ = Address.objects.get_or_create(**mail_address_params)
+                    mail_address.save()
+
+                    params = {}
+                    params['fdid'] = row.get('FDID')
+                    params['name'] = row.get('Fire Dept Name')
+                    params['headquarters_phone'] = row.get('HQ Phone')
+                    params['headquarters_fax'] = row.get('HQ Fax')
+                    params['department_type'] = row.get('Dept Type')
+                    params['organization_type'] = row.get('Organization Type')
+                    params['website'] = row.get('Website')
+                    params['headquarters_address'] = headquarters_address
+                    params['mail_address'] = mail_address
+                    params['state'] = row.get('HQ State')
+
+                    cls.objects.create(**params)
+                    counter += 1
+
+                assert counter == cls.objects.all().count()
+
+    def get_absolute_url(self):
+        return reverse('firedepartment_detail', kwargs=dict(pk=self.id))
+
+    def find_jurisdiction(self):
+        from geoshape.usgs.models import CountyorEquivalent, IncorporatedPlace, UnincorporatedPlace
+
+        counties = CountyorEquivalent.objects.filter(state_name='Virginia')
+        for county in counties:
+            incorporated = IncorporatedPlace.objects.filter(geom__intersects=county.geom)
+            unincoporated = UnincorporatedPlace.objects.filter(geom__intersects=county.geom)
+            station = FireStation.objects.filter(geom__intersects=county.geom)
+
+            print 'County', county.name
+            print 'Incorporated Place', incorporated.count()
+            print 'Unincorporated Place', unincoporated.count()
+            print 'Stations:', station
+
+    def __unicode__(self):
+        return self.name
 
 
 class FireStation(USGSStructureData):
     """
     Fire Stations.
     """
+    service_id = 7
 
-    department = models.ForeignKey(FireDepartment, null=True, blank=True)
-    fips = models.CharField(max_length=10, blank=True, null=True)
+    fdid = models.CharField(max_length=10, null=True, blank=True)
+    department = models.ForeignKey(FireDepartment, null=True, blank=True, on_delete=models.SET_NULL)
     station_number = models.IntegerField(null=True, blank=True)
+    station_address = models.ForeignKey(Address, null=True, blank=True)
     district = models.PolygonField(null=True, blank=True)
     objects = models.GeoManager()
 
+    @classmethod
+    def populate_address(cls):
+
+        us, _ = Country.objects.get_or_create(iso_code='US')
+        for obj in cls.objects.filter(station_address__isnull=True, address__isnull=False, zipcode__isnull=False):
+            try:
+                addr, _ = Address.objects.get_or_create(address_line1=obj.address, city=obj.city,
+                                                        state_province=obj.state, postal_code=obj.zipcode,
+                                                        country=us, defaults=dict(geom=obj.geom))
+            except Address.MultipleObjectsReturned:
+                objs = Address.objects.filter(address_line1=obj.address, city=obj.city, state_province=obj.state, postal_code=obj.zipcode,
+                                                        country=us)
+                import ipdb; ipdb.set_trace()
+            obj.station_address = addr
+            obj.save()
     @property
     def origin_uri(self):
         """
@@ -210,6 +366,7 @@ class FireStation(USGSStructureData):
         current_ids = set(FireStation.objects.all().values_list('objectid', flat=True))
         object_ids = set(json.loads(objects.content)['objectIds']) - current_ids
         url = 'http://services.nationalmap.gov/arcgis/rest/services/structures/MapServer/7/{0}?f=json'
+        us, _ = Country.objects.get_or_create(iso_code='US')
 
         for object in object_ids:
             try:
@@ -249,11 +406,12 @@ class FireStation(USGSStructureData):
                 print url.format(object)
                 print sys.exc_info()
 
-    def get_detail_url(self):
+    def get_absolute_url(self):
         return reverse('firestation_detail', kwargs=dict(pk=self.id))
 
     class Meta:
         verbose_name = 'Fire Station'
+
 
 class Staffing(models.Model):
     """

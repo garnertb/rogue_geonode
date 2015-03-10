@@ -1,13 +1,17 @@
+import json
 import logging
 from .forms import StaffingForm
-from .models import FireStation, Staffing
+from .models import FireStation, Staffing, FireDepartment
+from django.core.serializers.json import DjangoJSONEncoder
 from tastypie import fields
 from tastypie.authentication import SessionAuthentication, ApiKeyAuthentication, MultiAuthentication
 from tastypie.authorization import DjangoAuthorization
 from tastypie.cache import SimpleCache
 from tastypie.constants import ALL
 from tastypie.contrib.gis.resources import ModelResource
+from tastypie.serializers import Serializer
 from tastypie.validation import FormValidation
+
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +38,38 @@ class SessionAuth(SessionAuthentication):
             return getattr(request.user, 'username')
 
 
+class PrettyJSONSerializer(Serializer):
+    json_indent = 2
+
+    def to_json(self, data, options=None):
+        options = options or {}
+        data = self.to_simple(data, options)
+        return json.dumps(data, cls=DjangoJSONEncoder,
+                sort_keys=True, ensure_ascii=False, indent=self.json_indent)
+
+
+class FireDepartmentResource(ModelResource):
+    """
+    The Fire Department API.
+    """
+    class Meta:
+        resource_name = 'fire-departments'
+        queryset = FireDepartment.objects.all()
+        authorization = DjangoAuthorization()
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication())
+        cache = SimpleCache()
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
+        filtering = {'state': ALL}
+        serializer = PrettyJSONSerializer()
+
+
 class FireStationResource(ModelResource):
     """
-    The FireStation API.
+    The Fire Station API.
     """
+
+    department = fields.ForeignKey(FireDepartmentResource, 'department', null=True)
 
     class Meta:
         resource_name = 'firestations'
@@ -47,6 +79,13 @@ class FireStationResource(ModelResource):
         cache = SimpleCache()
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
+        filtering = {'department': ('exact',), 'state': ('exact',)}
+        excludes = ['addressbuildingname', 'complex_id', 'data_security', 'distribution_policy', 'fcode', 'foot_id',
+                    'ftype', 'globalid', 'gnis_id', 'islandmark', 'loaddate', 'objectid', 'permanent_identifier',
+                    'pointlocationtype', 'source_datadesc', 'source_datasetid', 'source_featureid', 'source_originator',
+                    'admintype'
+                    ]
+        serializer = PrettyJSONSerializer()
 
 
 class StaffingResource(ModelResource):
@@ -65,3 +104,4 @@ class StaffingResource(ModelResource):
         validation = FormValidation(form_class=StaffingForm)
         list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'delete']
+        serializer = PrettyJSONSerializer()

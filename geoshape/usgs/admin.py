@@ -31,9 +31,10 @@ class MinorCivilDivisionAdmin(admin.OSMGeoAdmin):
 
 admin.site.register(Reserve, ReserveAdmin)
 admin.site.register(IncorporatedPlace, IncorporatedPlaceAdmin)
+admin.site.register(UnincorporatedPlace, IncorporatedPlaceAdmin)
 admin.site.register(CountyorEquivalent, CountyOrEquivalentAdmin)
 admin.site.register(MinorCivilDivision, MinorCivilDivisionAdmin)
 
-for model in [GovUnits, NativeAmericanArea, UnincorporatedPlace, StateorTerritoryHigh]:
+for model in [GovUnits, NativeAmericanArea, StateorTerritoryHigh]:
     admin.site.register(model, GovUnitsAdmin)
 

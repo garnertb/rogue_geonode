@@ -66,3 +66,35 @@ input.ng-invalid {
     padding: 14px;
     color: gray;
 }
+
+
+.fire-station-header {
+    padding-bottom: 15px;
+}
+
+.fire-station-header h1,h2,h3{
+    line-height: 30px;
+}
+
+.firestation-breadcrumb hr {
+    margin: 7px 0;
+}
+
+.header-address {
+    font-size: 17.5px;
+    font-weight: 500;
+    margin-bottom: 0px;
+}
+
+.header-extra {
+    font-size: 14px;
+}
+
+.header-extra-attribute {
+    padding: 0 4px;
+}
+
+.header-extra-attribute:first-of-type {
+    padding-right:4px;
+    padding-left: 0;
+}
