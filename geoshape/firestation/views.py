@@ -24,7 +24,7 @@ class FireDepartmentListView(ListView):
         queryset = super(FireDepartmentListView, self).get_queryset()
         if self.kwargs.get('state'):
             queryset = queryset.filter(state__iexact=self.kwargs['state'])
-        return queryset
+        return queryset.order_by('name')
 
 
 class SpatialIntersectView(ListView):
