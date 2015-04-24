@@ -49,7 +49,8 @@ install_requires = [
         "django-classification-banner>=0.1.4",
         "django-maploom==1.0",
         "psycopg2==2.4.5",
-        "us==0.9.0"
+        "us==0.9.0",
+        "django-bootstrap-pagination==1.5.1"
 ]
 
 tests_requires = [
