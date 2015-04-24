@@ -1,7 +1,7 @@
 'use strict';
 
 (function() {
-  angular.module('fireStation', [])
+  angular.module('fireStation', ['ngResource'])
 
   .config(function($interpolateProvider, $httpProvider) {
     $interpolateProvider.startSymbol('{[');
@@ -11,7 +11,12 @@
 
   })
 
-  .controller('jurisdictionController', function($scope) {
+  .factory('FireStation', function($resource) {
+         return $resource('/api/v1/firestations/:id/?format=json', {}, {'query': {'method': 'GET', isArray: false}});
+      })
+
+
+  .controller('jurisdictionController', function($scope, $http, FireStation) {
           var options = {
               boxZoom: true,
               zoom: 15,
@@ -22,25 +27,58 @@
               fullscreenControl: false
           };
           $scope.map = L.map('map', options);
+          var showStations = true;
+          var stationIcon = L.MakiMarkers.icon({icon: "fire-station", color: "#FF4136", size: "m"});
+          var headquartersIcon = L.MakiMarkers.icon({icon: "embassy", color: "#0074D9", size: "m"});
+          var fitBoundsOptions = {padding: [6, 6]};
+          $scope.stations = [];
+          L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png',
+              {'attribution': '© Mapbox'}).addTo($scope.map);
+
+          if (showStations) {
+              FireStation.query({department: config.id}).$promise.then(function(data) {
+                 $scope.stations = data.objects;
+
+                  var stationMarkers = [];
+                  for (var i = 0; i < $scope.stations.length; i++) {
+                      var station = $scope.stations[i];
+                      var marker = L.marker(station.geom.coordinates.reverse(), {icon: stationIcon});
+                      marker.bindPopup('<b>' + station.name + '</b><br/>' + station.address + ', ' + station.city + ' ' +
+                          station.state);
+                      stationMarkers.push(marker);
+                  }
+
+                  var stationLayer = L.featureGroup(stationMarkers);
+                  stationLayer.addTo($scope.map);
+
+                  if (config.geom === null) {
+                    $scope.map.fitBounds(stationLayer.getBounds(), fitBoundsOptions);
+                  }
+              });
+          }
+
+          if (config.centroid != null) {
+           L.marker(config.centroid, {icon: headquartersIcon}).addTo($scope.map);
+          };
+
           if (config.geom != null) {
            var countyBoundary = L.geoJson(config.geom, {
                                   style: function (feature) {
-                                      return {color: '#0000ff'};
+                                      return {color: '#0074D9', fillOpacity: .05, opacity:.8};
                                   }
                               }).addTo($scope.map);
-          $scope.map.fitBounds(countyBoundary.getBounds());
+          $scope.map.fitBounds(countyBoundary.getBounds(), fitBoundsOptions);
           } else {
-              L.marker(config.centroid).addTo($scope.map);
               $scope.map.setView(config.centroid, 13);
           }
-
-          L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png',
-              {'attribution': '© Mapbox'}).addTo($scope.map);
       })
 
   .controller('fireStationController', function($scope, $window, $http) {
 
           var thisFirestation = '/api/v1/firestations/' + config.id + '/';
+
+          var stationIcon = L.MakiMarkers.icon({icon: "fire-station", color: "#FF4136", size: "l"});
+
           var options = {
               boxZoom: true,
               zoom: 15,
@@ -66,7 +104,7 @@
           });
 
           $scope.map = L.map('map', options).setView(config.centroid, 15);
-          L.marker(config.centroid).addTo($scope.map);
+          L.marker(config.centroid, {icon: stationIcon}).addTo($scope.map);
 
           L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png',
               {'attribution': '© Mapbox'}).addTo($scope.map);
