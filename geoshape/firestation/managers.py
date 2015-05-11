@@ -7,6 +7,7 @@ class PriorityDepartmentsManager(models.Manager):
 
     DEPARTMENTS = {
         'Austin': {'state': 'TX', 'fdid': 'WP801'},
+        'Arlington': {'state': 'VA', 'fdid': '01300'},
         'Chicago': {'state': 'IL', 'fdid': 'CS931'},
         'Phoenix': {'state': 'AZ', 'fdid': '08203'},
         'Mesa': {'state': 'AZ', 'fdid': '08183'},
