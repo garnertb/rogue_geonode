@@ -19,6 +19,7 @@ class FireStationDetailView(DetailView):
 class FireDepartmentListView(ListView):
     model = FireDepartment
     paginate_by = 100
+    queryset = FireDepartment.priority_departments.all()
 
     def get_queryset(self):
         queryset = super(FireDepartmentListView, self).get_queryset()
