@@ -328,7 +328,7 @@ class FireStation(USGSStructureData):
     department = models.ForeignKey(FireDepartment, null=True, blank=True, on_delete=models.SET_NULL)
     station_number = models.IntegerField(null=True, blank=True)
     station_address = models.ForeignKey(Address, null=True, blank=True)
-    district = models.PolygonField(null=True, blank=True)
+    district = models.MultiPolygonField(null=True, blank=True)
     objects = models.GeoManager()
 
     @classmethod

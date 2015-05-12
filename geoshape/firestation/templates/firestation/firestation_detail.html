@@ -16,6 +16,7 @@
 
      <script type="text/javascript">
     var config = {
+      geom: {{ object.district.json|safe|default:"null" }},
       centroid: [{{ object.geom.y }}, {{ object.geom.x }}],
       id: {{object.id}}
     }
@@ -29,7 +30,7 @@
                <div class="span12">
                 <div class="fire-station-header span7">
                 <h3>{{ object.name }}</h3>
-                <address class="header-address">{{ object.address.get_row_display }}</address>
+                <address class="header-address">{{ object.station_address.address_line1 }}, {{ object.station_address.city }}, {{ object.station_address.state_province }}</address>
                 <span class="header-extra">
                     <span class="header-extra-attribute"><b>FDID:</b> {{ object.fdid|default:"Unknown" }} </span>
                     {% if object.department %}

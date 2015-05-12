@@ -98,3 +98,15 @@ input.ng-invalid {
     padding-right:4px;
     padding-left: 0;
 }
+
+.sidebar-stat {
+    padding-bottom: 17px;
+    text-align: center;
+}
+
+.sidebar-stat-value {
+    font-size: 23px;
+    font-weight: bold;
+    margin-top: -5px;
+    color: #605e5e;
+}

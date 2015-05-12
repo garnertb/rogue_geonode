@@ -94,6 +94,7 @@
 
           $scope.forms = [];
           $scope.message = {};
+          var fitBoundsOptions = {padding: [6, 6]};
 
           var getUrl = '/api/v1/staffing/?firestation=' + config.id + '&format=json';
           $http.get(getUrl).success(function(data) {
@@ -105,6 +106,15 @@
 
           $scope.map = L.map('map', options).setView(config.centroid, 15);
           L.marker(config.centroid, {icon: stationIcon}).addTo($scope.map);
+
+          if (config.geom != null) {
+            var districtBoundary = L.geoJson(config.geom, {
+              style: function (feature) {
+                  return {color: '#0074D9', fillOpacity: .05, opacity: .8};
+              }
+            }).addTo($scope.map);
+            $scope.map.fitBounds(districtBoundary.getBounds(), fitBoundsOptions);
+          }
 
           L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png',
               {'attribution': '© Mapbox'}).addTo($scope.map);

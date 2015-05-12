@@ -86,6 +86,7 @@ class FireStationResource(ModelResource):
                     'admintype'
                     ]
         serializer = PrettyJSONSerializer()
+        limit = 120
 
 
 class StaffingResource(ModelResource):

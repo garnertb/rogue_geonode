@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n humanize %}
+{% load i18n humanize cache %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
@@ -14,7 +14,7 @@
     <script src="{{ STATIC_URL }}firestation/firestation.js"></script>
     <script src="{{ STATIC_URL }}firestation/Leaflet.MakiMarkers.js"></script>
 
-
+    {% cache 500 object_js object.id %}
      <script type="text/javascript">
     var config = {
       geom: {{ object.geom.json|safe|default:"null" }},
@@ -22,10 +22,14 @@
       id: {{object.id}}
     }
     </script>
+    {% endcache %}
+
 
 {% endblock %}
 
 {% block body_outer %}
+
+    {% cache 500 firedepartment_detail_page_content object.id %}
     <div class="container" ng-controller="jurisdictionController" ng-app="fireStation">
         <div class="row">
             <div class="span12 firestation-breadcrumb">
@@ -78,17 +82,39 @@
                           </td>
                       </tr>
                       {% endif %}
+                      {% if object.website %}
                       <tr>
-                          <td class="station-detail-table-attribute">City</td>
+                          <td class="station-detail-table-attribute">Website</td>
+                          <td>
+                            <a href="{{ object.website }}" target="_blank">Visit Website</a>
+                          </td>
+                      </tr>
+                      {% endif %}
+                      <tr>
+                          <td class="station-detail-table-attribute">City/County</td>
                           <td>{{ object.headquarters_address.city }}, {{ object.headquarters_address.state_province }}</td>
                         </tr>
                       </tbody>
                     </table>
                     </div>
 
-                    {% if object.website %}
-                        <a href="{{ object.website }}" target="_blank">Department Website</a>
+                    {% if object.content_object%}
+                        {% if object.content_object.population  %}
+                            <div class="sidebar-stat">
+                                <div class="sidebar-stat-title">Government Unit Population</div>
+                                <div class="sidebar-stat-value">{{ object.content_object.population|intcomma }}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if object.content_object.fips  %}
+                        <div class="sidebar-stat">
+                                <div class="sidebar-stat-title">Government Unit FIPS Code</div>
+                                <div class="sidebar-stat-value">{{ object.content_object.fips }}</div>
+                            </div>
+                        {% endif  %}
                     {% endif %}
+
+
                 </aside>
                 <div class="span7">
                    <h4>Stations</h4>
@@ -116,4 +142,5 @@
 
         </div>
     </div>
+    {% endcache %}
 {%  endblock %}
