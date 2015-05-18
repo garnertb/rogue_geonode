@@ -12,7 +12,7 @@
   })
 
   .factory('FireStation', function($resource) {
-         return $resource('/api/v1/firestations/:id/?format=json', {}, {'query': {'method': 'GET', isArray: false}});
+         return $resource('/api/v1/firestations/:id/', {}, {'query': {'method': 'GET', isArray: false}});
       })
 
 
@@ -96,7 +96,7 @@
           $scope.message = {};
           var fitBoundsOptions = {padding: [6, 6]};
 
-          var getUrl = '/api/v1/staffing/?firestation=' + config.id + '&format=json';
+          var getUrl = '/api/v1/staffing/?firestation=' + config.id;
           $http.get(getUrl).success(function(data) {
               for (var iForm = 0; iForm < data.meta.total_count; iForm++) {
                   data.objects[iForm].name = data.objects[iForm].apparatus + data.objects[iForm].id;
@@ -147,9 +147,9 @@
                   'officer_paramedic': 0
               };
 
-              var postUrl = '/api/v1/staffing/?format=json';
+              var postUrl = '/api/v1/staffing/';
               $http.post(postUrl, newForm).success(function(data, status, headers) {
-                  $http.get(headers('Location') + '?format=json').success(function(data) {
+                  $http.get(headers('Location')).success(function(data) {
                       data.name = data.apparatus + data.id;
                       $scope.forms.push(data);
                       $scope.showLastTab();
@@ -162,7 +162,7 @@
           };
 
           $scope.UpdateForm = function(form) {
-              var updateUrl = '/api/v1/staffing/' + form.id + '/?format=json';
+              var updateUrl = '/api/v1/staffing/' + form.id + '/';
               $http.put(updateUrl, form).success(function(data) {
                   form.name = form.apparatus + form.id;
                   $scope.showMessage(form.apparatus + ' staffing has been updated.');
@@ -177,7 +177,7 @@
 
           $scope.DeleteForm = function(form) {
 
-              $http.delete('/api/v1/staffing/' + form.id + '/?format=json').success(function(data) {
+              $http.delete('/api/v1/staffing/' + form.id + '/').success(function(data) {
                   $scope.forms.splice($scope.forms.indexOf(form), 1);
                   $scope.showMessage(form.apparatus + ' staffing has been deleted.');
                   $scope.showLastTab();

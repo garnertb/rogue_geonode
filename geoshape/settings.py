@@ -240,3 +240,4 @@ MAP_BASELAYERS = [
 ]
 
 DATABASE_ROUTERS = ['iaff_geoshape.routers.IAFFGeoRouter', ]
+TASTYPIE_DEFAULT_FORMATS = ['json']
