@@ -228,6 +228,7 @@ class FireDepartment(models.Model):
     geom = models.PolygonField(null=True, blank=True)
     objects = models.GeoManager()
     priority_departments = PriorityDepartmentsManager()
+    dist_model_score = models.FloatField(null=True, blank=True, editable=False)
 
     class Meta:
         ordering = ('state', 'name')

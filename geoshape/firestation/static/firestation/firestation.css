@@ -99,14 +99,27 @@ input.ng-invalid {
     padding-left: 0;
 }
 
+.sidebar-stats {
+    padding-top: 20px;
+}
+
 .sidebar-stat {
     padding-bottom: 17px;
     text-align: center;
 }
 
+.sidebar-stat-title {
+    font-weight: bold;
+    font-stretch: condensed;
+    -webkit-font-smoothing: antialiased;
+    font-variant: small-caps;
+    color: #999;
+}
+
 .sidebar-stat-value {
-    font-size: 23px;
+    font-size: 33px;
     font-weight: bold;
     margin-top: -5px;
     color: #605e5e;
+    letter-spacing: -1px;
 }

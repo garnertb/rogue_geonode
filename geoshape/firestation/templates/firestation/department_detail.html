@@ -98,22 +98,30 @@
                     </table>
                     </div>
 
+                    <div class="sidebar-stats">
+                    {% if object.dist_model_score  %}
+                        <div class="sidebar-stat">
+                                <div class="sidebar-stat-title">DIST SCORE</div>
+                                <div class="sidebar-stat-value">{{ object.dist_model_score | floatformat }}</div>
+                            </div>
+                        {% endif  %}
+
                     {% if object.content_object%}
                         {% if object.content_object.population  %}
                             <div class="sidebar-stat">
-                                <div class="sidebar-stat-title">Government Unit Population</div>
+                                <div class="sidebar-stat-title">GOVERNMENT UNIT POPULATION</div>
                                 <div class="sidebar-stat-value">{{ object.content_object.population|intcomma }}</div>
                             </div>
                         {% endif %}
 
                         {% if object.content_object.fips  %}
                         <div class="sidebar-stat">
-                                <div class="sidebar-stat-title">Government Unit FIPS Code</div>
+                                <div class="sidebar-stat-title">GOVERNMENT UNIT FIPS CODE</div>
                                 <div class="sidebar-stat-value">{{ object.content_object.fips }}</div>
                             </div>
                         {% endif  %}
                     {% endif %}
-
+                    </div>
 
                 </aside>
                 <div class="span7">
