@@ -53,7 +53,8 @@ install_requires = [
         "django-bootstrap-pagination==1.5.1",
         "django-phonenumber-field==0.7.2",
         "django-json-field==0.5.7",
-        "geopy==1.9.1"
+        "geopy==1.9.1",
+        "django-statsd-mozilla==0.3.15"
 ]
 
 tests_requires = [
