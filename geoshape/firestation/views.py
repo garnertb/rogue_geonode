@@ -79,4 +79,5 @@ class Stats(TemplateView):
         context['departments'] = FireDepartment.objects.all()
         context['stations_with_fdid'] = FireStation.objects.filter(fdid__isnull=False)
         context['stations_with_departments'] = FireStation.objects.filter(department__isnull=False)
+        context['departments_with_government_unit'] = FireDepartment.objects.filter(object_id__isnull=True)
         return context

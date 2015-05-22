@@ -26,14 +26,15 @@
               doubleClickZoom: false,
               fullscreenControl: false
           };
-          $scope.map = L.map('map', options);
+          var map = L.map('map', options);
           var showStations = true;
-          var stationIcon = L.MakiMarkers.icon({icon: "fire-station", color: "#FF4136", size: "m"});
-          var headquartersIcon = L.MakiMarkers.icon({icon: "embassy", color: "#0074D9", size: "m"});
+          var stationIcon = L.FireCARESMarkers.firestationmarker();
+          var headquartersIcon = L.FireCARESMarkers.headquartersmarker();
           var fitBoundsOptions = {padding: [6, 6]};
           $scope.stations = [];
+
           L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png',
-              {'attribution': '© Mapbox'}).addTo($scope.map);
+              {'attribution': '© Mapbox'}).addTo(map);
 
           if (showStations) {
               FireStation.query({department: config.id}).$promise.then(function(data) {
@@ -49,35 +50,33 @@
                   }
 
                   var stationLayer = L.featureGroup(stationMarkers);
-                  stationLayer.addTo($scope.map);
+                  stationLayer.addTo(map);
 
                   if (config.geom === null) {
-                    $scope.map.fitBounds(stationLayer.getBounds(), fitBoundsOptions);
+                    map.fitBounds(stationLayer.getBounds(), fitBoundsOptions);
                   }
               });
           }
 
           if (config.centroid != null) {
-           L.marker(config.centroid, {icon: headquartersIcon}).addTo($scope.map);
+           L.marker(config.centroid, {icon: headquartersIcon}).addTo(map);
           };
 
           if (config.geom != null) {
            var countyBoundary = L.geoJson(config.geom, {
                                   style: function (feature) {
-                                      return {color: '#0074D9', fillOpacity: .05, opacity:.8};
+                                      return {color: '#0074D9', fillOpacity: .05, opacity:.8, weight:2};
                                   }
-                              }).addTo($scope.map);
-          $scope.map.fitBounds(countyBoundary.getBounds(), fitBoundsOptions);
+                              }).addTo(map);
+            map.fitBounds(countyBoundary.getBounds(), fitBoundsOptions);
           } else {
-              $scope.map.setView(config.centroid, 13);
+              map.setView(config.centroid, 13);
           }
       })
 
   .controller('fireStationController', function($scope, $window, $http) {
 
           var thisFirestation = '/api/v1/firestations/' + config.id + '/';
-
-          var stationIcon = L.MakiMarkers.icon({icon: "fire-station", color: "#FF4136", size: "l"});
 
           var options = {
               boxZoom: true,
@@ -104,20 +103,20 @@
               $scope.forms = data.objects;
           });
 
-          $scope.map = L.map('map', options).setView(config.centroid, 15);
-          L.marker(config.centroid, {icon: stationIcon}).addTo($scope.map);
+          var map = L.map('map', options).setView(config.centroid, 15);
+          L.marker(config.centroid, {icon: L.FireCARESMarkers.firestationmarker()}).addTo(map);
 
           if (config.geom != null) {
             var districtBoundary = L.geoJson(config.geom, {
               style: function (feature) {
-                  return {color: '#0074D9', fillOpacity: .05, opacity: .8};
+                  return {color: '#0074D9', fillOpacity: .05, opacity: .8, weight:2 };
               }
-            }).addTo($scope.map);
-            $scope.map.fitBounds(districtBoundary.getBounds(), fitBoundsOptions);
+            }).addTo(map);
+            map.fitBounds(districtBoundary.getBounds(), fitBoundsOptions);
           }
 
           L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png',
-              {'attribution': '© Mapbox'}).addTo($scope.map);
+              {'attribution': '© Mapbox'}).addTo(map);
 
 
           $scope.ClearForm = function(form) {
