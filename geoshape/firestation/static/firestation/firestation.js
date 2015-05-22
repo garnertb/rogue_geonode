@@ -3,16 +3,27 @@
 (function() {
   angular.module('fireStation', ['ngResource'])
 
-  .config(function($interpolateProvider, $httpProvider) {
+  .config(function($interpolateProvider, $httpProvider, $resourceProvider) {
     $interpolateProvider.startSymbol('{[');
     $interpolateProvider.endSymbol(']}');
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-
+    $resourceProvider.defaults.stripTrailingSlashes = false;
   })
 
   .factory('FireStation', function($resource) {
          return $resource('/api/v1/firestations/:id/', {}, {'query': {'method': 'GET', isArray: false}});
+      })
+
+  .factory('Staffing', function($resource) {
+          return $resource('/api/v1/staffing/:id/', {},
+             {query: { method: 'GET', isArray: true,
+                 transformResponse: function(jsondata) {
+                   return JSON.parse(jsondata).objects;
+                 }
+                },
+              update: {method: 'PUT'}
+             });
       })
 
 
@@ -74,7 +85,7 @@
           }
       })
 
-  .controller('fireStationController', function($scope, $window, $http) {
+  .controller('fireStationController', function($scope, $window, $http, Staffing, $timeout) {
 
           var thisFirestation = '/api/v1/firestations/' + config.id + '/';
 
@@ -95,12 +106,13 @@
           $scope.message = {};
           var fitBoundsOptions = {padding: [6, 6]};
 
-          var getUrl = '/api/v1/staffing/?firestation=' + config.id;
-          $http.get(getUrl).success(function(data) {
-              for (var iForm = 0; iForm < data.meta.total_count; iForm++) {
-                  data.objects[iForm].name = data.objects[iForm].apparatus + data.objects[iForm].id;
+          Staffing.query({firestation: config.id}).$promise.then(function(data){
+              if ( !data.length ) {
+                $scope.AddForm();
+                return;
               }
-              $scope.forms = data.objects;
+
+              $scope.forms = data;
           });
 
           var map = L.map('map', options).setView(config.centroid, 15);
@@ -133,7 +145,7 @@
           };
 
           $scope.AddForm = function() {
-              var newForm = {'apparatus': 'Engine',
+              var newForm = new Staffing({'apparatus': 'Engine',
                   'chief_officer': 0,
                   'ems_emt': 0,
                   'ems_paramedic': 0,
@@ -143,30 +155,36 @@
                   'firefighter_paramedic': 0,
                   'firestation': thisFirestation,
                   'officer': 0,
-                  'officer_paramedic': 0
-              };
-
-              var postUrl = '/api/v1/staffing/';
-              $http.post(postUrl, newForm).success(function(data, status, headers) {
-                  $http.get(headers('Location')).success(function(data) {
-                      data.name = data.apparatus + data.id;
-                      $scope.forms.push(data);
-                      $scope.showLastTab();
-                  }).error(function(data, status) {
-                      $scope.showMessage('There was a problem adding the new record.', 'error');
-                  });
-              }).error(function(data, status) {
-                  $scope.showMessage('There was a problem adding the new record.', 'error');
+                  'officer_paramedic': 0,
+                  'id': new Date().getUTCMilliseconds(),
+                  'new_form': true
               });
+
+              $scope.forms.push(newForm);
+              $timeout($scope.showLastTab);
           };
 
           $scope.UpdateForm = function(form) {
-              var updateUrl = '/api/v1/staffing/' + form.id + '/';
-              $http.put(updateUrl, form).success(function(data) {
-                  form.name = form.apparatus + form.id;
-                  $scope.showMessage(form.apparatus + ' staffing has been updated.');
-              }).error(function(data, status) {
-                  $scope.showMessage('There was a problem updating the ' + form.apparatus + ' staffing.', 'error');
+
+              if (form.new_form === true) {
+
+                  //remove temp variables
+                  delete form['new_form'];
+                  delete form['id'];
+
+                  form.$save(form, function(formResponse) {
+                    form.id = formResponse.id;
+                    $timeout($scope.showLastTab);
+                    $scope.showMessage(form.apparatus + ' staffing has been updated.');
+                  });
+
+                  return;
+              }
+
+              form.$update({id:form.id}, function() {
+                $scope.showMessage(form.apparatus + ' staffing has been updated.');
+              }, function() {
+                $scope.showMessage('There was a problem updating the ' + form.apparatus + ' staffing.', 'error');
               });
           };
 
@@ -176,11 +194,17 @@
 
           $scope.DeleteForm = function(form) {
 
-              $http.delete('/api/v1/staffing/' + form.id + '/').success(function(data) {
+              if (form.new_form === true) {
+                  $scope.forms.splice($scope.forms.indexOf(form), 1);
+                  $scope.showMessage(form.apparatus + ' staffing has been deleted.');
+                  return;
+              }
+
+              form.$delete({id:form.id}, function(){
                   $scope.forms.splice($scope.forms.indexOf(form), 1);
                   $scope.showMessage(form.apparatus + ' staffing has been deleted.');
                   $scope.showLastTab();
-              }).error(function(data, status) {
+              }, function(){
                   $scope.showMessage('There was an error deleting the staffing for ' + form.apparatus + '.', 'error');
               });
           };

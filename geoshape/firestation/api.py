@@ -106,3 +106,4 @@ class StaffingResource(ModelResource):
         list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'delete']
         serializer = PrettyJSONSerializer()
+        always_return_data = True
