@@ -20,6 +20,9 @@ from geoshape.firecares_core.models import Address
 from phonenumber_field.modelfields import PhoneNumberField
 from geoshape.firecares_core.models import Country
 
+class InvalidNFPARegionException(Exception):
+    pass
+
 
 class USGSStructureData(models.Model):
     """
@@ -204,7 +207,14 @@ class FireDepartment(models.Model):
         ('Mostly Volunteer', 'Mostly Volunteer'),
         ('Career', 'Career'),
         ('Mostly Career', 'Mostly Career'),
+    ]
 
+    REGION_CHOICES = [
+        ('Northeast', 'Northeast'),
+        ('West', 'West'),
+        ('South', 'South'),
+        ('Midwest', 'Midwest'),
+        (None, '')
     ]
 
     created = models.DateTimeField(auto_now=True)
@@ -220,6 +230,7 @@ class FireDepartment(models.Model):
     website = models.URLField(null=True, blank=True)
     state = models.CharField(max_length=2)
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    region = models.CharField(max_length=20, choices=REGION_CHOICES, null=True, blank=True)
 
     # Allow the FD model to be tied to various types of USGS geospatial objects (ie Counties, Cities, Reservations, etc)
     object_id = models.PositiveIntegerField(null=True, blank=True)
@@ -245,6 +256,12 @@ class FireDepartment(models.Model):
         if hasattr(self.content_object, 'geom'):
             self.geom = self.content_object.geom
             self.save()
+
+    def set_region(self, region):
+        if region not in [x[0] for x in FireDepartment.REGION_CHOICES]:
+            raise InvalidNFPARegionException()
+        self.region = region
+        self.save()
 
     @classmethod
     def load_from_usfa_csv(cls):
