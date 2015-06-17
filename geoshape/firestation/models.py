@@ -19,9 +19,7 @@ from django.contrib.contenttypes.models import ContentType
 from geoshape.firecares_core.models import Address
 from phonenumber_field.modelfields import PhoneNumberField
 from geoshape.firecares_core.models import Country
-
-class InvalidNFPARegionException(Exception):
-    pass
+from geoshape.core.validators import validate_choice
 
 
 class USGSStructureData(models.Model):
@@ -230,7 +228,7 @@ class FireDepartment(models.Model):
     website = models.URLField(null=True, blank=True)
     state = models.CharField(max_length=2)
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
-    region = models.CharField(max_length=20, choices=REGION_CHOICES, null=True, blank=True)
+    region = models.CharField(max_length=20, choices=REGION_CHOICES, validators=[validate_choice(REGION_CHOICES)], null=True, blank=True)
 
     # Allow the FD model to be tied to various types of USGS geospatial objects (ie Counties, Cities, Reservations, etc)
     object_id = models.PositiveIntegerField(null=True, blank=True)
@@ -258,8 +256,7 @@ class FireDepartment(models.Model):
             self.save()
 
     def set_region(self, region):
-        if region not in [x[0] for x in FireDepartment.REGION_CHOICES]:
-            raise InvalidNFPARegionException()
+        validate_choice(FireDepartment.REGION_CHOICES)(region)
         self.region = region
         self.save()
 
