@@ -66,4 +66,3 @@ class Address(models.Model):
         verbose_name_plural = "Addresses"
         unique_together = ("address_line1", "address_line2", "postal_code",
                            "city", "state_province", "country")
-

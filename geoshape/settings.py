@@ -128,7 +128,7 @@ INSTALLED_APPS = (
     'phonenumber_field',
     'jsonfield',
     'bootstrap_pagination',
-    'django_statsd'
+    'django_statsd',
 ) + INSTALLED_APPS
 
 
@@ -230,6 +230,8 @@ if LOCKDOWN_GEONODE:
 # Load more settings from a file called local_settings.py if it exists
 try:
     from local_settings import *  # noqa
+    if 'DEV_INSTALLED_APPS' in locals():
+        INSTALLED_APPS += DEV_INSTALLED_APPS
 except ImportError:
     pass
 
