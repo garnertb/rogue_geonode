@@ -106,21 +106,19 @@
                             </div>
                         {% endif  %}
 
-                    {% if object.content_object%}
-                        {% if object.content_object.population  %}
-                            <div class="sidebar-stat">
-                                <div class="sidebar-stat-title">GOVERNMENT UNIT POPULATION</div>
-                                <div class="sidebar-stat-value">{{ object.content_object.population|intcomma }}</div>
-                            </div>
-                        {% endif %}
-
-                        {% if object.content_object.fips  %}
+                    {% if object.population  %}
                         <div class="sidebar-stat">
-                                <div class="sidebar-stat-title">GOVERNMENT UNIT FIPS CODE</div>
-                                <div class="sidebar-stat-value">{{ object.content_object.fips }}</div>
-                            </div>
-                        {% endif  %}
+                            <div class="sidebar-stat-title">GOVERNMENT UNIT POPULATION</div>
+                            <div class="sidebar-stat-value">{{ object.population|intcomma }}</div>
+                        </div>
                     {% endif %}
+
+                    {% if object.fips  %}
+                    <div class="sidebar-stat">
+                            <div class="sidebar-stat-title">GOVERNMENT UNIT FIPS CODE{{ object.fips|pluralize|upper }}</div>
+                            <div class="sidebar-stat-value">{{ object.fips|join:', ' }}</div>
+                        </div>
+                    {% endif  %}
                     </div>
 
                 </aside>

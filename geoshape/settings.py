@@ -129,6 +129,7 @@ INSTALLED_APPS = (
     'jsonfield',
     'bootstrap_pagination',
     'django_statsd',
+    'genericm2m'
 ) + INSTALLED_APPS
 
 

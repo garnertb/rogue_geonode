@@ -9,18 +9,16 @@ import us
 from .managers import PriorityDepartmentsManager
 
 from django.contrib.gis.db import models
-from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import Point, MultiPolygon
 from django.core.validators import MaxValueValidator
 from django.core.urlresolvers import reverse
 from django.db.transaction import rollback
 from django.db.utils import IntegrityError
-from django.contrib.contenttypes import generic
-from django.contrib.contenttypes.models import ContentType
 from geoshape.firecares_core.models import Address
 from phonenumber_field.modelfields import PhoneNumberField
 from geoshape.firecares_core.models import Country
 from geoshape.core.validators import validate_choice
-
+from genericm2m.models import RelatedObjectsDescriptor
 
 class USGSStructureData(models.Model):
     """
@@ -227,32 +225,47 @@ class FireDepartment(models.Model):
     organization_type = models.CharField(max_length=75, null=True, blank=True)
     website = models.URLField(null=True, blank=True)
     state = models.CharField(max_length=2)
-    content_type = models.ForeignKey(ContentType, null=True, blank=True)
     region = models.CharField(max_length=20, choices=REGION_CHOICES, validators=[validate_choice(REGION_CHOICES)], null=True, blank=True)
-
-    # Allow the FD model to be tied to various types of USGS geospatial objects (ie Counties, Cities, Reservations, etc)
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    content_object = generic.GenericForeignKey()
-
-    geom = models.PolygonField(null=True, blank=True)
+    geom = models.MultiPolygonField(null=True, blank=True)
     objects = models.GeoManager()
     priority_departments = PriorityDepartmentsManager()
     dist_model_score = models.FloatField(null=True, blank=True, editable=False)
+    government_unit = RelatedObjectsDescriptor()
 
     class Meta:
         ordering = ('state', 'name')
 
     @property
+    def government_unit_objects(self):
+        """
+        Memoize the government_unit generic key lookup.
+        """
+        if not getattr(self, '_government_unit_objects', None):
+            self._government_unit_objects = self.government_unit.all().generic_objects()
+
+        return self._government_unit_objects
+
+    @property
     def fips(self):
-        return self.content_object.fips
+        objs = self.government_unit_objects
+
+        if objs:
+            return [obj.fips for obj in objs if hasattr(obj, 'fips')]
+
+        return []
 
     @property
     def population(self):
-        return self.content_object.population
+        objs = self.government_unit_objects
+        if objs:
+            return sum([getattr(obj, 'population') for obj in objs])
 
-    def set_geometry_from_jurisdiction(self):
-        if hasattr(self.content_object, 'geom'):
-            self.geom = self.content_object.geom
+    def set_geometry_from_government_unit(self):
+        objs = self.government_unit_objects
+
+        if objs:
+
+            self.geom = MultiPolygon([obj.geom for obj in objs if getattr(obj, 'geom', None)])
             self.save()
 
     def set_region(self, region):
