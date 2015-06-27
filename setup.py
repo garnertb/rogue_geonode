@@ -54,7 +54,8 @@ install_requires = [
         "django-phonenumber-field==0.7.2",
         "django-json-field==0.5.7",
         "geopy==1.9.1",
-        "django-statsd-mozilla==0.3.15"
+        "django-statsd-mozilla==0.3.15",
+        "django-generic-m2m==0.3.0"
 ]
 
 tests_requires = [
