@@ -11,6 +11,11 @@ class DepartmentDetailView(DetailView):
     model = FireDepartment
     template_name = 'firestation/department_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(DepartmentDetailView, self).get_context_data(**kwargs)
+        context['similar_departments'] = FireDepartment.priority_departments.all()[:3]
+        return context
+
 
 class FireStationDetailView(DetailView):
     model = FireStation
@@ -81,3 +86,6 @@ class Stats(TemplateView):
         context['stations_with_departments'] = FireStation.objects.filter(department__isnull=False)
         context['departments_with_government_unit'] = FireDepartment.objects.filter(object_id__isnull=True)
         return context
+
+class Home(TemplateView):
+    template_name = 'firestation/home.html'

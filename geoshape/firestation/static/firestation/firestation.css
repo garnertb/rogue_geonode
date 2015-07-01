@@ -123,3 +123,15 @@ input.ng-invalid {
     color: #605e5e;
     letter-spacing: -1px;
 }
+
+#page-container {
+    overflow: hidden;
+}
+
+.overflow-y-scroll {
+    overflow-y: scroll;
+}
+
+#map-container {
+    padding-left: 0px;
+}

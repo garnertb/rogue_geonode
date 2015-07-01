@@ -44,7 +44,16 @@
           var fitBoundsOptions = {padding: [6, 6]};
           $scope.stations = [];
 
-          L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png',
+          function onResize() {
+              var height = $(window).height();
+              $('.content-height').css('height', (height - $('.navbar').height()).toString() + 'px');
+            }
+
+            onResize();
+
+            $(window).resize(onResize);
+
+          L.tileLayer('https://{s}.tiles.mapbox.com/v3/garnertb.m9pm846a/{z}/{x}/{y}.png',
               {'attribution': '© Mapbox'}).addTo(map);
 
           if (showStations) {

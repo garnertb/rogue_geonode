@@ -1,0 +1,23 @@
+<nav class="navbar ct-navbar--hoverEffectLine" role="navigation" data-heighttopbar="40px" data-startnavbar="0">
+    <div class="container">
+        <div class="navbar-header ct-panel--navbar">
+            <span style="font-size:21px;">FireCARES</span>
+        </div>
+        <div class="collapse navbar-collapse text-uppercase">
+            <ul class="nav navbar-nav ct-navbar--fadeInUp">
+                <li class="onepage active"><a href="{% url 'firestation_home' %}">Home</a></li>
+                <li class="onepage"><a href="#about">About Us</a></li>
+                <li class="onepage"><a href="#portfolio">Our work</a></li>
+                <li class="onepage"><a href="#whyus">Why us?</a></li>
+                <li class="onepage"><a href="#testimonials">testimonials</a></li>
+                {% if not user.is_authenticated %}
+                <li class="onepage pull-right"><a href="{% url 'account_login' %}">Login</a></li>
+                {% else %}
+                    <li class="onepage pull-right"><a href="{% url 'account_logout' %}">Logout</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+        <div class="ct-shapeBottom"></div>
+    </div>
+</nav>

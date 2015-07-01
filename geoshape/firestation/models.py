@@ -434,6 +434,18 @@ class FireStation(USGSStructureData):
                 print url.format(object)
                 print sys.exc_info()
 
+    @property
+    def district_area(self):
+        """
+        Project the district's geometry into north america lambert conformal conic
+        Returns km2
+        """
+        if self.district:
+            try:
+                return self.district.transform(102009, clone=True).area / 1000000
+            except:
+                return
+
     def get_absolute_url(self):
         return reverse('firestation_detail', kwargs=dict(pk=self.id))
 
