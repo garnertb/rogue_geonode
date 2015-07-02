@@ -399,70 +399,41 @@
         <span class="header-extra-attribute"><b>Department Type:</b> {{ object.department_type }}</span> &middot;
         <span class="header-extra-attribute"><b>Region:</b> {{ object.region }}</span>
     </span>
+</div>
 
-    <div class="row ct-u-paddingTop40">
-        <div class="col-sm-6 col-md-3">
-            <div class="ct-counterBox ct-u-displayTable ct-u-marginBottom40">
-                <div class="ct-iconBox ct-iconBox--2col ct-u-displayTableCell">
-                    <div class="ct-icon text-center ct-iconContainer--circle">
-                        <i class="fa fa-clock-o"></i>
-                    </div>
-                </div>
-                <div class="ct-counterBox--body ct-u-displayTableCell">
-                     <span class="ct-js-counter ct-counter ct-fw-600" data-ct-to="{{ object.dist_model_score }}" data-ct-speed="5000">{{ object.dist_model_score | floatformat }}s</span>
-                    <p class="text-uppercase ct-fw-600">
-                       DIST Score
-                    </p>
+<div class="row ct-u-paddingTop40 ct-u-paddingBottom30">
+    <div class="col-sm-6 col-md-3">
+        <div class="ct-counterBox ct-u-displayTable ct-u-marginBottom40">
+            <div class="ct-iconBox ct-iconBox--2col ct-u-displayTableCell">
+                <div class="ct-icon text-center ct-iconContainer--circle">
+                    <i class="fa fa-clock-o"></i>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-7 col-md-5">
-            <div class="ct-counterBox ct-u-displayTable ct-u-marginBottom40">
-                <div class="ct-iconBox ct-iconBox--2col ct-u-displayTableCell">
-                    <div class="ct-icon text-center ct-iconContainer--circle">
-                        <i class="fa fa-users"></i>
-                    </div>
-                </div>
-                <div class="ct-counterBox--body ct-u-displayTableCell">
-                     <span class="ct-js-counter ct-counter ct-fw-600" data-ct-to="{{ object.population }}" data-ct-speed="5000">{{ object.population }}</span>
-                    <p class="text-uppercase ct-fw-600">
-                       Protected Population
-                    </p>
-                </div>
+            <div class="ct-counterBox--body ct-u-displayTableCell">
+                 <span class="ct-js-counter ct-counter ct-fw-600" data-ct-to="{{ object.dist_model_score }}" data-ct-speed="5000">{{ object.dist_model_score | floatformat }}s</span>
+                <p class="text-uppercase ct-fw-600">
+                   DIST Score
+                </p>
             </div>
         </div>
-
     </div>
-
-
+    <div class="col-sm-7 col-md-5">
+        <div class="ct-counterBox ct-u-displayTable ct-u-marginBottom40">
+            <div class="ct-iconBox ct-iconBox--2col ct-u-displayTableCell">
+                <div class="ct-icon text-center ct-iconContainer--circle">
+                    <i class="fa fa-users"></i>
+                </div>
+            </div>
+            <div class="ct-counterBox--body ct-u-displayTableCell">
+                 <span class="ct-js-counter ct-counter ct-fw-600" data-ct-to="{{ object.population }}" data-ct-speed="5000">{{ object.population }}</span>
+                <p class="text-uppercase ct-fw-600">
+                   Protected Population
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 
-
-<div class="ct-heading ct-u-marginBottom30">
-    <h3 class="text-uppercase">Similar Departments</h3>
-</div>
-<div class="ct-section--products ct-section--products2col">
-    <div class="row">
-{% for department in similar_departments %}
-<div class="col-xs-12 col-sm-6 col-md-4">
- {% include 'firestation/_fire_department_card.html' %}
-</div>
-{% endfor %}
-
-<div class="clearfix visible-md visible-lg"></div>
-</div>
-</div>
-<div class="ct-pagination text-center ct-u-marginBottom30">
-    <ul class="pagination">
-        <li><a href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-angle-left"></i></span></a></li>
-        <li class="active"><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-angle-right"></i></span></a></li>
-    </ul>
-</div>
 <div class="ct-heading ct-u-marginBottom30">
     <h3 class="text-uppercase">browse stations</h3>
     <a href="search-list.html" class="pull-right"><i class="fa fa-angle-right"></i>View More</a>
@@ -495,12 +466,42 @@
             </table>
     </div>
 </div>
+
+<div class="ct-heading ct-u-marginBottom30">
+    <h3 class="text-uppercase">Similar Departments</h3>
+</div>
+<div class="ct-section--products ct-section--products2col">
+    <div class="row">
+{% for department in similar_departments %}
+<div class="col-xs-12 col-sm-6 col-md-4">
+ {% include 'firestation/_fire_department_card.html' %}
+</div>
+{% endfor %}
+
+<div class="clearfix visible-md visible-lg"></div>
+</div>
+</div>
+<div class="ct-pagination text-center ct-u-marginBottom30">
+    <ul class="pagination">
+        <li><a href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-angle-left"></i></span></a></li>
+        <li class="active"><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-angle-right"></i></span></a></li>
+    </ul>
+</div>
+
+
     <div class="ct-u-marginBottom30 hidden-lg hidden-md"></div>
 </div>
 
 
 <div class="col-lg-5 col-lg-pull-7" id="map-container">
-    <div id="map" style="height:1000px;"></div>
+    <div id="map" style="height:1000px;">
+        <div class="map-shadow"></div>
+    </div>
     <!--<div class="ct-js-googleMap ct-googleMap ct-googleMap-2col ct-js-googleMap--group" data-location="Richmond" data-icon="{{STATIC_URL}}firestation/theme/assets/images/marker-house.png" data-display-desc="true" data-zoom="14" data-height="1750" id="map"></div>-->
 </div>
 </div>
