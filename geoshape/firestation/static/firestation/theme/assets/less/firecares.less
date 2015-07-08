@@ -6,18 +6,18 @@
     overflow-y: scroll;
 }
 
-#map-container {
-    padding-left: 0px;
+#map {
+  min-height: 400px;
 }
 
 #map:last-child:after {
-content: '';
-position: absolute;
--webkit-box-shadow: inset -1px 1px 5px 3px rgba(0,0,0,0.19);
--moz-box-shadow: inset -1px 1px 5px 3px rgba(0,0,0,0.19);
-box-shadow: inset -1px 1px 5px 3px rgba(0,0,0,0.19);
-width:100%;
-height:100%;
-display:block;
-pointer-events: none;
+  content: '';
+  position: absolute;
+  -webkit-box-shadow: inset -1px 1px 5px 3px rgba(0, 0, 0, 0.19);
+  -moz-box-shadow: inset -1px 1px 5px 3px rgba(0, 0, 0, 0.19);
+  box-shadow: inset -1px 1px 5px 3px rgba(0, 0, 0, 0.19);
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
 }

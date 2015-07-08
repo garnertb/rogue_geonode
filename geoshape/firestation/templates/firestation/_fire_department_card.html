@@ -1,35 +1,35 @@
 {% load humanize %}
 <div class="ct-itemProducts ct-u-marginBottom30 ct-hover">
-        <label class="control-label sale">
-            Recently updated
-        </label>
-        <a href="{{ department.get_absolute_url }}">
-            <div class="ct-main-content">
-                <div class="ct-imageBox">
-                    <img src="{{STATIC_URL}}firestation/theme/assets/images/content/property-1.jpg" alt=""><i class="fa fa-eye"></i>
+    <label class="control-label sale">
+        Recently updated
+    </label>
+    <a href="{{ department.get_absolute_url }}">
+        <div class="ct-main-content">
+            <div class="ct-imageBox">
+                <img src="{{STATIC_URL}}firestation/theme/assets/images/content/property-1.jpg" alt=""><i class="fa fa-eye"></i>
+            </div>
+            <div class="ct-main-text">
+                <div class="ct-product--tilte">
+                    {{ department.name }}
                 </div>
-                <div class="ct-main-text">
-                    <div class="ct-product--tilte">
-                        {{ department.name }}
-                    </div>
-                    <div class="ct-product--description">
-                        {{ department.station_address.address_line1 }}
-                    </div>
+                <div class="ct-product--description">
+                    {{ department.station_address.address_line1 }}
                 </div>
             </div>
-            <div class="ct-product--meta">
-                <div class="ct-icons">
-                    <span>
-                        <i class="fa fa-building-o"></i> {{ department.firestation_set.count }}
-                    </span>
-                    <span>
-                        <i class="fa fa-clock-o"></i> {{ department.dist_model_score|floatformat:"0" }}s
-                    </span>
-                    <span>
-                        <i class="fa fa-users"></i> {{ department.population|intcomma }}
-                    </span>
-                </div>
-                <div class="ct-text"></div>
+        </div>
+        <div class="ct-product--meta">
+            <div class="ct-icons">
+                <span>
+                    <i class="fa fa-building-o"></i> {{ department.firestation_set.count }}
+                </span>
+                <span>
+                    <i class="fa fa-clock-o"></i> {{ department.dist_model_score|floatformat:"0" }}s
+                </span>
+                <span>
+                    <i class="fa fa-users"></i> {{ department.population|intcomma }}
+                </span>
             </div>
-        </a>
-    </div>
+            <div class="ct-text"></div>
+        </div>
+    </a>
+</div>

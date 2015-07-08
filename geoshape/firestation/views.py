@@ -12,12 +12,15 @@ class DepartmentDetailView(DetailView):
     model = FireDepartment
     template_name = 'firestation/department_detail.html'
     page = 1
+    objects_per_page = 10
 
     def get_context_data(self, **kwargs):
         context = super(DepartmentDetailView, self).get_context_data(**kwargs)
+
         page = self.request.GET.get('page')
 
-        paginator = Paginator(context['firedepartment'].firestation_set.all(), 5)
+        paginator = Paginator(context['firedepartment'].firestation_set.all(), self.objects_per_page)
+
         try:
             stations = paginator.page(page)
         except PageNotAnInteger:
@@ -26,10 +29,9 @@ class DepartmentDetailView(DetailView):
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
             stations = paginator.page(paginator.num_pages)
+
         context['firestations'] = stations
-
-        context['similar_departments'] = FireDepartment.priority_departments.all()[:3]
-
+        context['similar_departments'] = FireDepartment.priority_departments.all()[:8]
         return context
 
 
