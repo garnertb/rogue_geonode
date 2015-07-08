@@ -438,7 +438,7 @@
     <a href="search-list.html" class="pull-right"><i class="fa fa-angle-right"></i>View More</a>
 </div>
 
-<div class="ct-section--products ct-section--products2col ct-u-marginBottom30">
+<div class="ct-section--products ct-section--products2col">
     <div class="row">
         <table class="table table-striped">
                 <thead>
@@ -449,7 +449,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {%  for station in object.firestation_set.all %}
+                {%  for station in firestations %}
                 <tr>
                     <td>{{ station.name }}</td>
                     <td>{{ station.address }}</td>
@@ -466,6 +466,26 @@
     </div>
 </div>
 
+<div class="ct-pagination text-center ct-u-marginBottom30">
+    <ul class="pagination">
+	{% if firestations.has_previous %}
+            <li><a href="?page={{firestations.previous_page_number }}" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-angle-left"></i></span></a></li>
+	{% endif %}
+
+        {% for p in firestations.paginator.page_range %}
+            {% if p != firestations.number %}
+                 <li class="active"><a href="?page={{ p }}">{{ p }}</a></li>
+            {% else %}
+                 <li><a href="?page={{ p }}">{{ p }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+	{% if firestations.has_next %}
+            <li><a href="?page={{firestations.next_page_number}}" aria-label="Next"><span aria-hidden="true"><i class="fa fa-angle-right"></i></span></a></li>
+	{% endif %}
+    </ul>
+</div>
+
 <div class="ct-heading ct-u-marginBottom30">
     <h3 class="text-uppercase">Similar Departments</h3>
 </div>
@@ -480,18 +500,6 @@
 <div class="clearfix visible-md visible-lg"></div>
 </div>
 </div>
-<div class="ct-pagination text-center ct-u-marginBottom30">
-    <ul class="pagination">
-        <li><a href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-angle-left"></i></span></a></li>
-        <li class="active"><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-angle-right"></i></span></a></li>
-    </ul>
-</div>
-
 
     <div class="ct-u-marginBottom30 hidden-lg hidden-md"></div>
 </div>

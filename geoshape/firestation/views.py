@@ -5,15 +5,31 @@ from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 class DepartmentDetailView(DetailView):
     model = FireDepartment
     template_name = 'firestation/department_detail.html'
+    page = 1
 
     def get_context_data(self, **kwargs):
         context = super(DepartmentDetailView, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page')
+
+        paginator = Paginator(context['firedepartment'].firestation_set.all(), 5)
+        try:
+            stations = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            stations = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            stations = paginator.page(paginator.num_pages)
+        context['firestations'] = stations
+
         context['similar_departments'] = FireDepartment.priority_departments.all()[:3]
+
         return context
 
 
