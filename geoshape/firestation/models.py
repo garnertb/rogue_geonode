@@ -268,20 +268,39 @@ class FireDepartment(models.Model):
                 return
 
     @property
-    def similar_departments(self, population_buffer=100000, ignore_regions_min=1000000):
+    def similar_departments(self, ignore_regions_min=1000000):
         """
         Identifies similar departments based on the protected population size and region.
         """
-        population_min = 0
-        population_max = population_buffer
 
-        if self.population > population_buffer:
-            population_min = self.population - population_buffer
-            population_max = self.population + population_buffer
+        params = {}
 
+        if self.population >= 250000:
+            params['population__gte'] = 250000
 
-        similar = FireDepartment.objects.filter(population__lte=population_max,
-                                                population__gte=population_min).exclude(id=self.id)
+        elif self.population < 2500:
+            params['population__lt'] = 2500
+
+        else:
+            community_sizes = [
+                (100000, 249999),
+                (50000, 99999),
+                (25000, 49999),
+                (10000, 24999),
+                (5000, 9999),
+                (2500, 4999)]
+
+            for lower_bound, upper_bound in community_sizes:
+                if lower_bound <= self.population <= upper_bound:
+                    params['population__lte'] = upper_bound
+                    params['population__gte'] = lower_bound
+
+                break
+
+        similar = FireDepartment.objects.filter(**params)\
+            .exclude(id=self.id)\
+            .extra(select={'difference': "abs(population - %s)"}, select_params=[self.population])\
+            .extra(order_by=['difference'])
 
         # Large departments may not have similar departments in their region.
         if self.population < ignore_regions_min:
