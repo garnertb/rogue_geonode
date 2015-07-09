@@ -1,5 +1,6 @@
 {% load humanize %}
-<div class="ct-itemProducts ct-u-marginBottom30 ct-hover">
+{% load firecares %}
+<div class="ct-itemProducts ct-u-marginBottom30 ct-hover fire-department-card">
     <label class="control-label sale">
         Recently updated
     </label>
@@ -26,7 +27,7 @@
                     <i class="fa fa-clock-o"></i> {{ department.dist_model_score|floatformat:"0" }}s
                 </span>
                 <span>
-                    <i class="fa fa-users"></i> {{ department.population|intcomma }}
+                    <i class="fa fa-users"></i> {{ department.population|abbreviatedintword }}
                 </span>
             </div>
             <div class="ct-text"></div>
