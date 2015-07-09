@@ -8,14 +8,13 @@
 <html class="no-js" lang="en"> <!--<![endif]-->
 <head lang="en">
     <meta charset="UTF-8">
-    <meta name="description" content="Estato - Developers HTML Template">
+    <meta name="description" content="FireCARES assessment of the {{ object.name }}">
     <meta name="author" content="CreateIT">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <title>FireCARES - {{ object.name }}</title>
-
-    <link rel="icon" href="{{STATIC_URL}}firestation/theme/assets/images/content/estato-favicon.png">
+    <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.png"/>
 
 
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}firestation/theme/assets/css/bootstrap.css">
@@ -179,7 +178,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="index.html"><img src="{{STATIC_URL}}firestation/theme/assets/images/content/logo.png" alt="Estato"> </a>
+    <a class="navbar-brand" href="{% url 'firestation_home' %}"><img src="{{STATIC_URL}}firestation/theme/assets/images/content/logo.png" alt="Estato"> </a>
     <button type="button" class="searchForm-toggle">
         <span class="sr-only">Toggle navigation</span>
         <span><i class="fa fa-search"></i></span>
@@ -257,7 +256,7 @@
 
 <div class="ct-site--map">
     <div class="container">
-        <a href="index.html">Home</a>
+        <a href="{% url 'firestation_home' %}">Home</a>
         <a href="{% url 'firedepartment_list' %}">Departments</a>
         <a href="{% url 'firedepartment_detail' object.id %}">{{ object.name }}</a>
     </div>
@@ -363,6 +362,15 @@
                                         <span>{{ object.headquarters_fax|default:"Unknown" }}</span>
                                     </div>
                                 </div>
+                                {% if object.website %}
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600"><a href="{{ object.website }}">Official Website</a></span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                    </div>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="col-md-8">
@@ -373,60 +381,26 @@
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam. Quisque semper justo at risus. Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus, sed posuere.
                             </p>
                             <div class="ct-heading ct-u-marginBottom20">
-                                <h3 class="text-uppercase">Property Details</h3>
+                                <h3 class="text-uppercase">Community</h3>
                             </div>
-                            <div class="ct-u-displayTableVertical ct-productDetails--type2 ct-u-marginBottom20">
-                                <div class="ct-u-displayTableCell">
-                                    <ul class="list-unstyled">
-                                        <li>
-                                            <i class="fa fa-check-circle"></i>
-                                            <span class="text-capitalize">air conditioning</span>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-check-circle"></i>
-                                            <span class="text-capitalize">ADSL cable</span>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-check-circle"></i>
-                                            <span class="text-capitalize">WiFi</span>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-times-circle negative"></i>
-                                            <span class="text-capitalize">HiFi audio</span>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-check-circle"></i>
-                                            <span class="text-capitalize">fridge</span>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-check-circle"></i>
-                                            <span class="text-capitalize">grill</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="ct-u-displayTableCell">
-                                    <ul class="list-unstyled">
-                                        <li>
-                                            <i class="fa fa-check-circle"></i>
-                                            <span class="text-capitalize">Full HD TV</span>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-times-circle negative"></i>
-                                            <span class="text-capitalize">Digital antenna</span>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-check-circle"></i>
-                                            <span>Kitchen with Island</span>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-times-circle negative"></i>
-                                            <span class="text-capitalize">exotic garden</span>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-times-circle negative"></i>
-                                            <span class="text-capitalize">guest house</span>
-                                        </li>
-                                    </ul>
+                            <div class="ct-section--products ct-section--products2col ct-u-marginBottom30">
+                                <div class="row">
+                                    <table class="table table-striped" style="font-size:14px;">
+                                        <thead>
+                                        <tr>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>Protected Population</td>
+                                            <td>{{ object.population|intcomma }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Size</td>
+                                            <td>{{ object.geom_area|floatformat:"2"}} km&sup2;</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <div class="ct-heading ct-u-marginBottom20">

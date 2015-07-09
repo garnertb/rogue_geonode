@@ -260,6 +260,18 @@ class FireDepartment(models.Model):
         if objs:
             return sum([getattr(obj, 'population') for obj in objs])
 
+    @property
+    def geom_area(self):
+        """
+        Project the department's geometry into north america lambert conformal conic
+        Returns km2
+        """
+        if self.geom:
+            try:
+                return self.geom.transform(102009, clone=True).area / 1000000
+            except:
+                return
+
     def set_geometry_from_government_unit(self):
         objs = self.government_unit_objects
 
