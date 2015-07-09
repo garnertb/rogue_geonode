@@ -31,7 +31,6 @@ class DepartmentDetailView(DetailView):
             stations = paginator.page(paginator.num_pages)
 
         context['firestations'] = stations
-        context['similar_departments'] = FireDepartment.priority_departments.all()[:8]
         context['residential_fires'] = map(lambda year: (year, randint(0, 500)), reversed(range(2002, 2014)))
         return context
 

@@ -231,6 +231,7 @@ class FireDepartment(models.Model):
     priority_departments = PriorityDepartmentsManager()
     dist_model_score = models.FloatField(null=True, blank=True, editable=False)
     government_unit = RelatedObjectsDescriptor()
+    population = models.IntegerField(null=True, blank=True)
 
     class Meta:
         ordering = ('state', 'name')
@@ -255,12 +256,6 @@ class FireDepartment(models.Model):
         return []
 
     @property
-    def population(self):
-        objs = self.government_unit_objects
-        if objs:
-            return sum([getattr(obj, 'population') for obj in objs])
-
-    @property
     def geom_area(self):
         """
         Project the department's geometry into north america lambert conformal conic
@@ -272,12 +267,50 @@ class FireDepartment(models.Model):
             except:
                 return
 
+    @property
+    def similar_departments(self, population_buffer=100000, ignore_regions_min=1000000):
+        """
+        Identifies similar departments based on the protected population size and region.
+        """
+        population_min = 0
+        population_max = population_buffer
+
+        if self.population > population_buffer:
+            population_min = self.population - population_buffer
+            population_max = self.population + population_buffer
+
+
+        similar = FireDepartment.objects.filter(population__lte=population_max,
+                                                population__gte=population_min).exclude(id=self.id)
+
+        # Large departments may not have similar departments in their region.
+        if self.population < ignore_regions_min:
+            similar = similar.filter(region=self.region)
+
+        return similar
+
     def set_geometry_from_government_unit(self):
         objs = self.government_unit_objects
 
         if objs:
-
             self.geom = MultiPolygon([obj.geom for obj in objs if getattr(obj, 'geom', None)])
+            self.save()
+
+    def set_population_from_government_unit(self):
+        """
+        Stores the population of government units on the FD object to speed up querying.
+        """
+        objs = self.government_unit_objects
+
+        if objs:
+            self.population = 0
+
+            for gov_unit in objs:
+                pop = getattr(gov_unit, 'population', None)
+
+                if pop is not None:
+                    self.population += pop
+
             self.save()
 
     def set_region(self, region):
