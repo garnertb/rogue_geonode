@@ -434,9 +434,9 @@
 
                                 {% for p in firestations.paginator.page_range %}
                                     {% if p != firestations.number %}
-                                         <li class="active"><a href="?page={{ p }}">{{ p }}</a></li>
-                                    {% else %}
                                          <li><a href="?page={{ p }}">{{ p }}</a></li>
+                                    {% else %}
+                                         <li class="active"><a href="?page={{ p }}">{{ p }}</a></li>
                                     {% endif %}
                                 {% endfor %}
 
