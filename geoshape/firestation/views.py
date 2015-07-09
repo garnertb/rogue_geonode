@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from random import randint
 
 class DepartmentDetailView(DetailView):
     model = FireDepartment
@@ -32,6 +32,7 @@ class DepartmentDetailView(DetailView):
 
         context['firestations'] = stations
         context['similar_departments'] = FireDepartment.priority_departments.all()[:8]
+        context['residential_fires'] = map(lambda year: (year, randint(0, 500)), reversed(range(2002, 2014)))
         return context
 
 
