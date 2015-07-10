@@ -5,8 +5,10 @@ from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
+from django.db.models.fields import FieldDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from random import randint
+import urllib
 
 class DepartmentDetailView(DetailView):
     model = FireDepartment
@@ -35,21 +37,92 @@ class DepartmentDetailView(DetailView):
         return context
 
 
-class FireStationDetailView(DetailView):
-    model = FireStation
+class SafeSortMixin(object):
+    """
+    Allow queryset sorting on explicit fields.
+    """
+    # A list of tuples containing the order_by string and verbose name
+    sort_by_fields = []
+
+    def model_field_valid(self, field, choices=None):
+        """
+        Ensures a model field is valid.
+        """
+        if not field:
+            return False
+
+        if choices and field not in choices:
+            return False
+
+        if hasattr(self, 'model'):
+            try:
+                self.model._meta.get_field(field.replace('-', '', 1))
+            except FieldDoesNotExist:
+                return False
+
+        return True
+
+    def get_queryset(self):
+        """
+        Runs the sortqueryset method on the current queryset.
+        """
+        queryset = super(SafeSortMixin, self).get_queryset()
+        return self.sort_queryset(queryset, self.request.GET.get('sort_by'))
+
+    def sort_queryset(self, queryset, order_by):
+        """
+        Sorts a queryset based after ensuring the provided field is valid.
+        """
+        if self.model_field_valid(order_by, choices=[name for name, verbose_name in self.sort_by_fields]):
+            queryset = queryset.order_by(order_by)
+        return queryset
+
+    def get_sort_context(self, context):
+        """
+        Adds sorting context to the context object.
+        """
+        context['sort_by_fields'] = []
+
+        for field, verbose_name in self.sort_by_fields:
+            get_params = dict(self.request.GET)
+            get_params['sort_by'] = field
+            context['sort_by_fields'].append((verbose_name, self.request.path + '?' + urllib.urlencode(get_params)))
+
+        return context
 
 
-class FireDepartmentListView(ListView):
+class FireDepartmentListView(ListView, SafeSortMixin):
     model = FireDepartment
-    paginate_by = 100
+    paginate_by = 30
     queryset = FireDepartment.priority_departments.all()
+    sort_by_fields = [
+        ('name', 'Name Ascending'),
+        ('-name', 'Name Descending'),
+        ('state', 'State Acscending'),
+        ('-state', 'State Descending'),
+        ('dist_model_score', 'Lowest DIST Score'),
+        ('-dist_model_score', 'Highest DIST Score'),
+        ('population', 'Smallest Population'),
+        ('-population', 'Largest Population')
+        ]
 
     def get_queryset(self):
         queryset = super(FireDepartmentListView, self).get_queryset()
+        queryset = self.sort_queryset(queryset, self.request.GET.get('sort_by'))
+
         if self.kwargs.get('state'):
             queryset = queryset.filter(state__iexact=self.kwargs['state'])
-        return queryset.order_by('name')
 
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(FireDepartmentListView, self).get_context_data(**kwargs)
+        context = self.get_sort_context(context)
+        return context
+
+
+class FireStationDetailView(DetailView):
+    model = FireStation
 
 class SpatialIntersectView(ListView):
     model = FireStation
