@@ -9,4 +9,3 @@ dist/*
 docs/build/*
 .idea/*
 *.pyc
-local_settings.py
