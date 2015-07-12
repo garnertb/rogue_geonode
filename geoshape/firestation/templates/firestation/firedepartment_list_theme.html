@@ -1,3 +1,5 @@
+{% load firecares %}
+
 <!DOCTYPE html>
 <!--[if IE 8 ]>
 <html class="no-js ie8" lang="en"> <![endif]-->
@@ -439,13 +441,11 @@
         </li>
         <li>
             <form>
-                <select class="ct-js-select">
-                    <option value="nine">12 items</option>
-                    <option value="eighteen">15 items</option>
-                    <option value="eighteen">21 items</option>
-                    <option value="twentyseven">36 items</option>
-                    <option value="fourtyfive">45 items</option>
-                    <option value="ninety">90 items</option>
+                <select id="limit-select" class="ct-js-select">
+                    <option value="?{% url_replace request 'limit' 15 %}">15 items</option>
+                    <option value="?{% url_replace request 'limit' 30 %}">30 items</option>
+                    <option value="?{% url_replace request 'limit' 60 %}">60 items</option>
+                    <option value="?{% url_replace request 'limit' 90 %}">90 items</option>
                 </select>
             </form>
         </li>
@@ -509,6 +509,9 @@
 
 <script type="text/javascript">
       $('#sort-select').on("select2-selecting", function(e) {
+        window.location.href = e.choice.id;
+       });
+      $('#limit-select').on("select2-selecting", function(e) {
         window.location.href = e.choice.id;
        });
     </script>

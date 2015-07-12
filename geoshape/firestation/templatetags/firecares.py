@@ -61,3 +61,12 @@ def abbreviatedintword(value):
             new_value = value / float(large_number)
             return _check_for_i18n(new_value, *converters(new_value))
     return value
+
+@register.simple_tag
+def url_replace(request, field, value):
+    """
+    Replaces or creates a GET parameter in a URL.
+    """
+    dict_ = request.GET.copy()
+    dict_[field] = value
+    return dict_.urlencode()

@@ -84,14 +84,53 @@ class SafeSortMixin(object):
         context['sort_by_fields'] = []
 
         for field, verbose_name in self.sort_by_fields:
-            get_params = dict(self.request.GET)
+            get_params = self.request.GET.copy()
             get_params['sort_by'] = field
             context['sort_by_fields'].append((verbose_name, self.request.path + '?' + urllib.urlencode(get_params)))
 
         return context
 
 
-class FireDepartmentListView(ListView, SafeSortMixin):
+class LimitMixin(object):
+
+    limit_by_amounts = [15, 30, 60, 90]
+
+    def limit_queryset(self, limit):
+        """
+        Limits the queryset.
+        """
+
+        try:
+            limit = int(limit)
+            self.paginate_by = limit
+
+        except:
+            return
+
+    def get_queryset(self):
+        """
+        Runs the sortqueryset method on the current queryset.
+        """
+        queryset = super(LimitMixin, self).get_queryset()
+        return self.limit_queryset(queryset, self.request.GET.get('limit'))
+
+    def get_limit_context(self, context):
+        """
+        Adds sorting context to the context object.
+        """
+
+        context['limit_by_amounts'] = []
+        get_params = self.request.GET.copy()
+
+        for limit in self.limit_by_amounts:
+            get_params['limit'] = limit
+            context['limit_by_amounts'].append((self.request.path + '?' + urllib.urlencode(get_params), limit))
+
+        return context
+
+
+
+class FireDepartmentListView(ListView, SafeSortMixin, LimitMixin):
     model = FireDepartment
     paginate_by = 30
     queryset = FireDepartment.priority_departments.all()
@@ -109,10 +148,7 @@ class FireDepartmentListView(ListView, SafeSortMixin):
     def get_queryset(self):
         queryset = super(FireDepartmentListView, self).get_queryset()
         queryset = self.sort_queryset(queryset, self.request.GET.get('sort_by'))
-
-        if self.kwargs.get('state'):
-            queryset = queryset.filter(state__iexact=self.kwargs['state'])
-
+        self.limit_queryset(self.request.GET.get('limit'))
         return queryset
 
     def get_context_data(self, **kwargs):
