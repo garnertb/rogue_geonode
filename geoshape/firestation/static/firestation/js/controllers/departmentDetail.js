@@ -4,7 +4,7 @@
     angular.module('fireStation.departmentDetailController', [])
 
     .controller('jurisdictionController', function($scope, $http, FireStation, map) {
-          var departmentMap = map.initMap('map');
+          var departmentMap = map.initMap('map', {scrollWheelZoom: false});
           var showStations = true;
           var stationIcon = L.FireCARESMarkers.firestationmarker();
           var headquartersIcon = L.FireCARESMarkers.headquartersmarker();
