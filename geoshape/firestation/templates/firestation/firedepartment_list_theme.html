@@ -1,3 +1,5 @@
+{% load firecares %}
+
 <!DOCTYPE html>
 <!--[if IE 8 ]>
 <html class="no-js ie8" lang="en"> <![endif]-->
@@ -7,7 +9,7 @@
 <html class="no-js" lang="en"> <!--<![endif]-->
 <head lang="en">
     <meta charset="UTF-8">
-    <meta name="description" content="Estato - Developers HTML Template">
+    <meta name="description" content="FireCARES search results">
     <meta name="author" content="CreateIT">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -28,7 +30,7 @@
     <script src="{{STATIC_URL}}firestation/theme/assets/js/modernizr.custom.js"></script>
 
 </head>
-<body class="cssAnimate">
+<body class="ct-headroom--fixedTopBar cssAnimate">
 
 {% include "firestation/_navbar.html" %}
 
@@ -153,8 +155,8 @@
 
 <div class="ct-site--map">
     <div class="container">
-        <a href="index.html">Home</a>
-        <a href="search-grid.html">Search Results</a>
+        <a href="{% url 'firestation_home' %}">Home</a>
+        <a href="{% url 'firedepartment_list_theme' %}">Search Results</a>
     </div>
 </div>
 <section class="ct-u-paddingTop50 ct-u-paddingBottom60">
@@ -439,13 +441,11 @@
         </li>
         <li>
             <form>
-                <select class="ct-js-select">
-                    <option value="nine">12 items</option>
-                    <option value="eighteen">15 items</option>
-                    <option value="eighteen">21 items</option>
-                    <option value="twentyseven">36 items</option>
-                    <option value="fourtyfive">45 items</option>
-                    <option value="ninety">90 items</option>
+                <select id="limit-select" class="ct-js-select">
+                    <option value="?{% url_replace request 'limit' 15 %}">15 items</option>
+                    <option value="?{% url_replace request 'limit' 30 %}">30 items</option>
+                    <option value="?{% url_replace request 'limit' 60 %}">60 items</option>
+                    <option value="?{% url_replace request 'limit' 90 %}">90 items</option>
                 </select>
             </form>
         </li>
@@ -509,6 +509,9 @@
 
 <script type="text/javascript">
       $('#sort-select').on("select2-selecting", function(e) {
+        window.location.href = e.choice.id;
+       });
+      $('#limit-select').on("select2-selecting", function(e) {
         window.location.href = e.choice.id;
        });
     </script>

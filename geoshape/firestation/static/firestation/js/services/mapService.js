@@ -14,7 +14,7 @@
             }
 
             L.tileLayer('https://{s}.tiles.mapbox.com/v3/garnertb.m9pm846a/{z}/{x}/{y}.png',
-              {'attribution': '© Mapbox', 'opacity':.75}).addTo(map);
+              {'attribution': '© Mapbox', 'opacity':.95}).addTo(map);
         };
 
         this.initMap = function(div, options) {

@@ -50,7 +50,7 @@
 
 </head>
 
-<body class="ct-headroom--scrollUpBoth cssAnimate" ng-controller="jurisdictionController" ng-app="fireStation">
+<body class="ct-headroom--fixedTopBar cssAnimate" ng-controller="jurisdictionController" ng-app="fireStation">
 
 
 <form class="ct-searchFormMobile ct-u-marginBottom50" role="form">
@@ -185,79 +185,12 @@
     </button>
 </div>
 
-<div class="ct-topBar ">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-7 col-md-8">
-                <div class="ct-panel--contact ct-panel--left">
-                    <div class="ct-panel--item ct-email">
-                        <a href="#"><i class="fa fa-envelope-o"></i> example@example.com</a>
-                    </div>
-                    <ul class="nav navbar-nav ct-switcher--language">
-                        <li class="dropdown">
-                            <a href="#">
-                                <i class="fa fa-globe"></i>
-                                English
-                                <i class="fa fa-angle-down"></i>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="#">
-                                        English
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        Spanish
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        German
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <div id="ct-js-navSearch">
-                        <i class="fa fa-search"></i>
-                        <input placeholder="Search ..." required type="text" name="field[]" class="form-control input-lg ct-input--search">
-                    </div>
-                    <div class="ct-navbar-search">
-                        <form role="form">
-                            <button class="ct-navbar-search-button" type="submit">
-                                <i class="fa fa-search fa-fw"></i>
-                            </button>
-                            <div class="form-group">
-                                <input id="search" placeholder="Search ..." required type="text" class="form-control input-lg">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-5 col-md-4">
-                <div class="ct-panel--user ct-panel--right text-right">
-                    <div class="ct-panel--item ct-email">
-                        <a href="properties.html"><i class="fa fa-home"></i> My Properties</a>
-                    </div>
-                    <div class="ct-panel--item ct-email">
-                        <a href="login.html"><i class="fa fa-user"></i> Login</a>
-                    </div>
-                    <div class="ct-panel--item ct-email">
-                        <a href="registration.html"><i class="fa fa-plus-square"></i> Register</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 {% include "firestation/_navbar.html" %}
 
 <div class="ct-site--map">
     <div class="container">
         <a href="{% url 'firestation_home' %}">Home</a>
-        <a href="{% url 'firedepartment_list' %}">Departments</a>
+        <a href="{% url 'firedepartment_list_theme' %}">Departments</a>
         <a href="{% url 'firedepartment_detail' object.id %}">{{ object.name }}</a>
     </div>
 </div>
@@ -289,9 +222,6 @@
             <div class="row">
                 <div class="col-md-8 col-lg-9">
                     <div class="ct-u-displayTableVertical">
-                        <div class="ct-u-displayTableCell text-left">
-                            <i class="fa fa-calendar"></i><h6>created on {{ object.created }}</h6>
-                        </div>
                         <div class="ct-u-displayTableCell text-left">
                             <i class="fa fa-pencil-square-o"></i><h6>last updated on {{ object.modified }}</h6>
                         </div>
@@ -397,7 +327,7 @@
                                         </tr>
                                         <tr>
                                             <td>Size</td>
-                                            <td>{{ object.geom_area|floatformat:"2"}} km&sup2;</td>
+                                            <td>{{ object.geom_area|floatformat:"2"|intcomma}} km&sup2;</td>
                                         </tr>
                                         </tbody>
                                     </table>
