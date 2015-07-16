@@ -13,8 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <title>FireCARES - Fire Study Team</title>
-    <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico"/>
-    <link rel="icon" href="{{STATIC_URL}}firestation/theme/assets/images/content/estato-favicon.png">
+    {% include 'firestation/_favicon.html' %}
 
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}firestation/theme/assets/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}firestation/theme/assets/css/style.css">
@@ -179,8 +178,7 @@
         <div class="ct-headerText--normal">
             <div class="container">
                 <img class="ct-u-marginBottom90" src="{{STATIC_URL}}firestation/theme/assets/images/content/logo-headerOnepager.png" alt="">
-                <h1 class="text-uppercase ct-u-marginBottom40">[Think, create, succeed]</h1>
-                <h3 class="text-uppercase ct-fw-600 ct-u-marginBottom20 ct-u-letterSpacing10">- we are successful creative agency -</h3>
+                <h1 class="text-uppercase ct-u-marginBottom40">Community Assessment Response Evaluation System</h1>
                 <a class="btn btn-default btn-transparent--border ct-u-text--white ct-js-btnScroll" href="{% url 'firedepartment_list_theme' %}">Search</a>
             </div>
         </div>

@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <title>FireCARES - {{ object.name }}</title>
-    <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.png"/>
+    {% include 'firestation/_favicon.html' %}
 
 
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}firestation/theme/assets/css/bootstrap.css">
@@ -351,10 +351,10 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        {% for year, count in residential_fires %}
+                                        {% for stat in object.residential_structure_fire_counts %}
                                         <tr>
-                                            <td>{{ year }}</td>
-                                            <td>{{ count }}</td>
+                                            <td>{{ stat.year }}</td>
+                                            <td>{{ stat.count|intcomma }}</td>
                                             <td>N/A</td>
                                         </tr>
                                         {% endfor %}
@@ -530,7 +530,7 @@
             <a href="search-list.html" class="pull-right"><i class="fa fa-angle-right"></i>View More</a>
         </div>
         <div class="ct-js-owl ct-owl-controls--type2" data-single="false" data-items="4" data-pagination="false">
-            {% for department in object.similar_departments %}
+            {% for department in object.similar_departments|slice:":15" %}
             <div class="item">
                 {% include 'firestation/_fire_department_card.html' %}
             </div>
