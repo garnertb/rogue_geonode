@@ -351,10 +351,10 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        {% for year, count in residential_fires %}
+                                        {% for stat in object.residential_structure_fire_counts %}
                                         <tr>
-                                            <td>{{ year }}</td>
-                                            <td>{{ count }}</td>
+                                            <td>{{ stat.year }}</td>
+                                            <td>{{ stat.count|intcomma }}</td>
                                             <td>N/A</td>
                                         </tr>
                                         {% endfor %}

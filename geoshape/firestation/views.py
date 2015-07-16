@@ -10,6 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from random import randint
 import urllib
 
+
 class DepartmentDetailView(DetailView):
     model = FireDepartment
     template_name = 'firestation/department_detail.html'
@@ -33,7 +34,6 @@ class DepartmentDetailView(DetailView):
             stations = paginator.page(paginator.num_pages)
 
         context['firestations'] = stations
-        context['residential_fires'] = map(lambda year: (year, randint(0, 500)), reversed(range(2002, 2014)))
         return context
 
 

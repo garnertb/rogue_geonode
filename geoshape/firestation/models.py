@@ -337,6 +337,9 @@ class FireDepartment(models.Model):
         self.region = region
         self.save()
 
+    def residential_structure_fire_counts(self):
+        return self.nfirsstatistic_set.filter(metric='residential_structure_fires')
+
     @classmethod
     def load_from_usfa_csv(cls):
         """
@@ -553,3 +556,19 @@ class Staffing(models.Model):
 
     class Meta:
         verbose_name_plural = 'Response Capabilities'
+
+
+class NFIRSStatistic(models.Model):
+    """
+    Caches NFIRS stats.
+    """
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    fire_department = models.ForeignKey(FireDepartment)
+    metric = models.CharField(max_length=50, db_index=True)
+    year = models.PositiveSmallIntegerField(db_index=True)
+    count = models.PositiveSmallIntegerField(db_index=True)
+
+    class Meta:
+        unique_together = ['fire_department', 'year', 'metric']
+        ordering = ['-year',]
