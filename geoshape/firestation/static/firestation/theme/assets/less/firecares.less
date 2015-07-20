@@ -31,3 +31,51 @@
   background-size: cover;
   height: 800px;
 }
+
+// Theme Update & Overrides // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// Logo & Branding
+.logo {
+    background: transparent url("../images/firecares-logo.png") left center no-repeat;
+    display: inline-block;
+    text-decoration: none;
+    min-width: 196px;
+    min-height: 60px;
+
+    h1 {
+      text-indent: -999px;
+    }
+}
+
+// Utility & Navbar Adjustments
+.navbar {
+    box-shadow: none;
+    min-height: 110px;
+    
+    .navbar-nav li a {
+        font-size: 15px;
+    }
+}
+
+.ct-topBar {
+    background: transparent;
+    box-shadow:  none;
+    opacity: .35; // TODO: temporary visual trick
+    font-weight: 100;
+
+    &.navbar-scroll-top {
+      position: relative; // overrides the utility menu behavior
+    }
+}
+
+
+
+.ct-panel--item {
+    padding-bottom: 5px 0 0;
+}
+
+.onepager .ct-navbar--hoverEffectLine .navbar-nav .onepage > a, 
+.ct-navbar--hoverEffectLine .navbar-nav .onepage > a {
+    margin: 0 5px 0 24px;
+    padding: 24px 0 24px 0;
+}
