@@ -580,17 +580,24 @@ header{
 }
 
 .ct-textBox{
-  h1,h2,h3,h4,h5,h6{
+  h1,h2,h3,h4,h5,h6 {
+    font-family: @font-family-sections;
     line-height: 18px;
-    margin-bottom: 9px;
+    margin-bottom: 18px;
+    font-weight: 100;
+    letter-spacing: 0.02em;
+    + h4 {
+      margin-bottom: 12px;
+    }
   }
   span{
-    line-height: 24px;
+    font-size: @font-size-small - 3;
+    font-weight: 100;
   }
   .ct-productID{
-    background-color: #333;
     border-radius: 3px;
-    padding: 3px 6px;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 3px 9px;
   }
 }
 
@@ -1094,7 +1101,7 @@ header{
 //Site Map
 
 .ct-site--map{
-  background-color: #333;
+  background-color: #161a23;
   overflow: hidden;
   line-height: 10px;
   a{
@@ -1110,8 +1117,8 @@ header{
       content: "";
       height: 30px;
       width: 30px;
-      border-top: 1px solid #5b5b5b;
-      border-right: 1px solid #5b5b5b;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      border-right: 1px solid rgba(255,255,255,0.2);
       -ms-transform: rotate(45deg); /* IE 9 */
       -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
       transform: rotate(45deg);
@@ -1120,6 +1127,13 @@ header{
       right: 6px;
       top: 0;
       border-radius: 2px;
+    }
+    &:last-of-type {
+      color: rgba(255,255,255,0.25);
+      cursor: default;
+      &:after {
+        display: none;
+      }
     }
   }
 }
