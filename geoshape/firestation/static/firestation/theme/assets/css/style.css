@@ -5302,7 +5302,7 @@ h1,
 }
 h2,
 .h2 {
-  font-size: 35px;
+  font-size: 32px;
 }
 h3,
 .h3 {
@@ -9905,14 +9905,24 @@ img.mfp-img {
 .ct-topBar {
   background: transparent;
   box-shadow: none;
-  opacity: .35;
   font-weight: 100;
 }
 .ct-topBar.navbar-scroll-top {
   position: relative;
 }
+.ct-topBar a {
+  color: #a6a6a6;
+  font-weight: 400;
+}
+.ct-topBar i {
+  margin-right: 2px;
+}
 .ct-mediaSection-inner {
   padding: 1.5em;
+}
+.ct-mediaSection-inner a.btn:hover {
+  color: white;
+  opacity: 0.5;
 }
 .ct-panel--item {
   padding-bottom: 5px 0 0;
@@ -10422,6 +10432,9 @@ header {
 .ct-textBox span {
   font-size: 13px;
   font-weight: 100;
+}
+.ct-textBox span > span {
+  color: #f29a00;
 }
 .ct-textBox .ct-productID {
   border-radius: 3px;

@@ -60,17 +60,29 @@
 .ct-topBar {
     background: transparent;
     box-shadow:  none;
-    opacity: .35; // TODO: temporary visual trick
     font-weight: 100;
 
     &.navbar-scroll-top {
       position: relative; // overrides the utility menu behavior
+    }
+
+    a {
+      color: lighten(@gray-base, 65%);
+      font-weight: 400;
+    }
+
+    i {
+      margin-right: 2px;
     }
 }
 
 // MediaSection
 .ct-mediaSection-inner {
   padding: 1.5em;
+  a.btn:hover {
+    color: white;
+    opacity: 0.5;
+  }
 }
 
 .ct-panel--item {

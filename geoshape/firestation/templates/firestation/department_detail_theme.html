@@ -201,16 +201,13 @@
                 <div class="ct-textBox ct-u-text--white ct-u-displayTableCell text-left">
                     <h2>{{ object.name }}</h2>
                     <h4>{{ object.headquarters_address.get_row_display }}</h4>
-                    <span class="ct-productID ct-fw-600">
-                        FDID: {{ object.fdid }}
+                    <span class="ct-productID ct-fw-300">
+                        FDID: <span>{{ object.fdid }}</span>
                     </span>
                 </div>
                 <div class="ct-u-displayTableCell text-right">
-                    <a href="search-grid.html" class="btn btn-sm btn-default btn-transparent--border btn-hoverWhite ct-u-text--white"><i class="fa fa-heart-o"></i></a>
-                    <a href="javascript:window.print()" class="btn btn-sm btn-default btn-transparent--border btn-hoverWhite ct-u-text--white"><i class="fa fa-print"></i></a>
-                    <div class="ct-buttonBox">
-                        <a href="{% url 'firedepartment_list_theme' %}" class="btn btn-default btn-transparent--border btn-hoverWhite ct-u-text--white">Back to Results</a>
-                    </div>
+                    <a href="search-grid.html" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="fa fa-star-o fa-2x"></i></a>
+                    <a href="javascript:window.print()" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="fa fa-print fa-2x"></i></a>
                 </div>
             </div>
         </div>
