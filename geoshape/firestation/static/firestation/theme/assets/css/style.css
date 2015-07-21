@@ -12120,10 +12120,16 @@ header {
   color: #f39800;
 }
 .ct-productMeta--single i {
-  margin-right: 10px;
-  color: #f39800;
-  font-size: 14px;
-  line-height: 30px;
+  margin-right: 5px;
+  color: #a6a6a6;
+  font-size: 16px;
+  line-height: 50px;
+}
+.ct-productMeta--single i:before {
+  vertical-align: middle;
+}
+.ct-productMeta--single h6 {
+  font-weight: 500;
 }
 .ct-productMeta--single .fb-like span {
   vertical-align: inherit!important;
