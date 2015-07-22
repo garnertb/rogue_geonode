@@ -1471,6 +1471,12 @@ header{
     border-top: 1px solid #e6e6e6;
     span{
       line-height: 50px;
+
+      a i {
+        color: @brand-primary;
+        font-weight: 600;
+        margin-left: 2px;
+      }
     }
   }
 }
@@ -2132,6 +2138,8 @@ header{
   box-shadow:         0 0 3px 0 rgba(4, 4, 4, 0.3);
   .ct-imageBox{
     img{
+      background: @gray-lightest;
+      min-height: 150px;
       width: 100%;
     }
   }
@@ -2209,9 +2217,11 @@ header{
     .ct-icons{
       float: left;
       span{
+        .ct-m-transition(all, 0.2s, ease);
         margin-right: 10px;
         color: #f3f3f3;
-        .ct-m-transition(all, 0.2s, ease);
+        font-size: 15px;
+        font-weight: 400;
         i{
           color: #cccccc;
           .ct-m-transition(all, 0.2s, ease);
@@ -2407,7 +2417,7 @@ header{
      font-size: 22px;
      line-height: 30px;
      span{
-       color: #cccccc;
+       color: lighten(@gray-lighter,5%);
      }
    }
   }

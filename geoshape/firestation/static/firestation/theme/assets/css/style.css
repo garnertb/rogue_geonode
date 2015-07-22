@@ -5264,7 +5264,7 @@ body {
 }
 p {
   font-family: "Open Sans", sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 21px;
 }
 a {
@@ -11263,6 +11263,11 @@ header {
 .ct-productDetails .ct-u-displayTableCell span {
   line-height: 50px;
 }
+.ct-productDetails .ct-u-displayTableCell span a i {
+  color: #f29a00;
+  font-weight: 600;
+  margin-left: 2px;
+}
 .ct-productDetails--type2 {
   background-color: #ebebeb;
 }
@@ -11866,6 +11871,8 @@ header {
 }
 .ct-itemProducts .ct-imageBox img,
 .ct-itemProducts--small .ct-imageBox img {
+  background: #eeeeee;
+  min-height: 150px;
   width: 100%;
 }
 .ct-itemProducts .ct-main-content,
@@ -11946,12 +11953,14 @@ header {
   float: left;
 }
 .ct-itemProducts .ct-product--meta .ct-icons span {
-  margin-right: 10px;
-  color: #f3f3f3;
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
   -o-transition: all 0.2s ease;
   transition: all 0.2s ease;
+  margin-right: 10px;
+  color: #f3f3f3;
+  font-size: 15px;
+  font-weight: 400;
 }
 .ct-itemProducts .ct-product--meta .ct-icons span i {
   color: #cccccc;
@@ -12149,7 +12158,7 @@ header {
 .ct-sortingBar .ct-sortingTitle h4 span,
 .ct-sortingBar .ct-sortingTitle h5 span,
 .ct-sortingBar .ct-sortingTitle h6 span {
-  color: #cccccc;
+  color: #b3b3b3;
 }
 .ct-sortingBar .ct-showPages {
   -webkit-box-shadow: 0 0 3px 0 rgba(4, 4, 4, 0.3);
