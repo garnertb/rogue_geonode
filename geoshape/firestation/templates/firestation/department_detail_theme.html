@@ -206,8 +206,8 @@
                     </span>
                 </div>
                 <div class="ct-u-displayTableCell text-right">
-                    <a href="search-grid.html" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="fa fa-star-o fa-2x"></i></a>
-                    <a href="javascript:window.print()" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="fa fa-print fa-2x"></i></a>
+                    <a href="search-grid.html" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="icon-star fa-2x"></i></a>
+                    <a href="javascript:window.print()" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="icon-printer fa-2x"></i></a>
                 </div>
             </div>
         </div>
@@ -307,29 +307,22 @@
                             <div class="ct-heading ct-u-marginBottom10">
                                 <h3>Description</h3>
                             </div>
-                            <p class="ct-u-marginBottom40">
+                            <p class="ct-u-marginBottom50">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam. Quisque semper justo at risus. Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus, sed posuere.
                             </p>
-                            <div class="ct-heading ct-u-marginBottom20">
-                                <h3>Community</h3>
-                            </div>
-                            <div class="ct-section--products ct-section--products2col ct-u-marginBottom40">
-                                <table class="table table-striped" style="font-size:14px;">
-                                    <thead>
-                                    <tr>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>Protected Population</td>
-                                        <td>{{ object.population|intcomma }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Size</td>
-                                        <td>{{ object.geom_area|floatformat:"2"|intcomma}} km&sup2;</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                            <div class="community-stats ct-u-marginBottom40">
+                                <div class="row">
+                                    <div class="col-md-6 ct-u-marginBottom20">
+                                        <i class="icon-shield pull-left"></i>
+                                        <h4>{{ object.population|intcomma }}</h4>
+                                        <h5>Protected Population</h5>
+                                    </div>
+                                    <div class="col-md-6 ct-u-marginBottom20">
+                                        <i class="icon-users pull-left"></i>
+                                        <h4>{{ object.geom_area|floatformat:"2"|intcomma}} <span>km&sup2;</span></h4>
+                                        <h5>Community Size</h5>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="ct-heading ct-u-marginBottom10">
