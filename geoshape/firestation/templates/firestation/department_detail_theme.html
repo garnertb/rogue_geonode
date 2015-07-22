@@ -304,87 +304,80 @@
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <div class="ct-heading ct-u-marginBottom20">
+                            <div class="ct-heading ct-u-marginBottom10">
                                 <h3>Description</h3>
                             </div>
-                            <p class="ct-u-marginBottom20">
+                            <p class="ct-u-marginBottom40">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam. Quisque semper justo at risus. Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus, sed posuere.
                             </p>
                             <div class="ct-heading ct-u-marginBottom20">
                                 <h3>Community</h3>
                             </div>
-                            <div class="ct-section--products ct-section--products2col ct-u-marginBottom30">
-                                <div>
-                                    <table class="table table-striped" style="font-size:14px;">
-                                        <thead>
-                                        <tr>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>Protected Population</td>
-                                            <td>{{ object.population|intcomma }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Size</td>
-                                            <td>{{ object.geom_area|floatformat:"2"|intcomma}} km&sup2;</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div class="ct-section--products ct-section--products2col ct-u-marginBottom40">
+                                <table class="table table-striped" style="font-size:14px;">
+                                    <thead>
+                                    <tr>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Protected Population</td>
+                                        <td>{{ object.population|intcomma }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Size</td>
+                                        <td>{{ object.geom_area|floatformat:"2"|intcomma}} km&sup2;</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
 
-                            <div class="ct-heading ct-u-marginBottom20">
+                            <div class="ct-heading ct-u-marginBottom10">
                                 <h3>Residential Structure Fires</h3>
-                                <p>Annual residential fire counts for the {{ object.name }} based on the
-                                    National Fire Incident Reporting System (NFIRS).
-                                </p>
                             </div>
-                            <div class="ct-section--products ct-section--products2col ct-u-marginBottom30">
-                                <div>
-                                    <table class="table table-striped" style="font-size:14px;">
-                                        <thead>
-                                            <tr>
-                                                <td>Year</td>
-                                                <td>Fires</td>
-                                                <td>Rank</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        {% for stat in object.residential_structure_fire_counts %}
+                            <p class="ct-u-marginBottom20">Annual residential fire counts for the {{ object.name }} based on the National Fire Incident Reporting System (NFIRS).
+                            </p>
+                            <div class="ct-section--products ct-section--products2col ct-u-marginBottom40">
+                                <table class="table table-striped" style="font-size:14px;">
+                                    <thead>
                                         <tr>
-                                            <td>{{ stat.year }}</td>
-                                            <td>{{ stat.count|intcomma }}</td>
-                                            <td>N/A</td>
+                                            <td>Year</td>
+                                            <td>Fires</td>
+                                            <td>Rank</td>
                                         </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    </thead>
+                                    <tbody>
+                                    {% for stat in object.residential_structure_fire_counts %}
+                                    <tr>
+                                        <td>{{ stat.year }}</td>
+                                        <td>{{ stat.count|intcomma }}</td>
+                                        <td>N/A</td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
 
                             <div class="ct-heading ct-u-marginBottom20">
                                 <h3>Stations</h3>
                             </div>
                             <div class="ct-section--products ct-section--products2col ct-u-marginBottom30">
-                                <div class="row">
-                                    <table class="table table-striped" style="font-size:14px;">
-                                        <thead>
-                                        <tr>
-                                            <th>Station Name</th>
-                                            <th>Address</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {%  for station in firestations %}
-                                        <tr>
-                                            <td>{{ station.name }}</td>
-                                            <td>{{ station.address }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <table class="table table-striped" style="font-size:14px;">
+                                    <thead>
+                                    <tr>
+                                        <th>Station Name</th>
+                                        <th>Address</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {%  for station in firestations %}
+                                    <tr>
+                                        <td>{{ station.name }}</td>
+                                        <td>{{ station.address }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
                         <div class="ct-pagination text-center ct-u-marginBottom30">
                             <ul class="pagination">
