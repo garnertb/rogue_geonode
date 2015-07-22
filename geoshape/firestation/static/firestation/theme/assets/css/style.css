@@ -10557,6 +10557,8 @@ you can use the generic selector below, but it's slower:
 }
 .fire-department-card .ct-main-text {
   min-height: 75px;
+  max-height: 75px;
+  overflow: hidden;
 }
 .header-image {
   background: url('/static/img/truck.jpg') no-repeat 50% 65%;
@@ -12378,7 +12380,7 @@ header {
   opacity: 1;
 }
 .ct-footer--extended {
-  background-color: #333;
+  background-color: #1f2530;
 }
 .ct-footer--extended h1,
 .ct-footer--extended h2,
@@ -12388,7 +12390,8 @@ header {
 .ct-footer--extended h6 {
   color: #fff;
   line-height: 18px;
-  font-weight: bold;
+  font-weight: 300;
+  opacity: 0.95;
 }
 .ct-footer--extended span,
 .ct-footer--extended li {
@@ -12398,6 +12401,7 @@ header {
 }
 .ct-footer--extended span {
   opacity: 0.5;
+  font-weight: 100;
 }
 .ct-footer--extended a {
   font-size: 14px;
@@ -12513,7 +12517,7 @@ header {
   opacity: 1;
 }
 .ct-postFooter {
-  background-color: #191919;
+  background-color: #161A23;
   position: relative;
   color: #757575;
   font-size: 14px;
@@ -12572,7 +12576,7 @@ header {
 }
 .ct-itemProducts .ct-imageBox img,
 .ct-itemProducts--small .ct-imageBox img {
-  background: #eeeeee;
+  background: #a6a6a6;
   min-height: 150px;
   width: 100%;
 }
@@ -12583,7 +12587,7 @@ header {
 }
 .ct-itemProducts .ct-product--tilte,
 .ct-itemProducts--small .ct-product--tilte {
-  font-weight: bold;
+  font-weight: 600;
 }
 .ct-itemProducts .ct-product--price,
 .ct-itemProducts--small .ct-product--price {
@@ -12625,7 +12629,7 @@ header {
 .ct-itemProducts .ct-product--tilte {
   line-height: 18px;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
 }
 .ct-itemProducts .ct-product--price {
   font-size: 16px;
@@ -12642,7 +12646,7 @@ header {
 }
 .ct-itemProducts .ct-product--meta {
   padding: 5px 20px;
-  background-color: #333333;
+  background-color: #1f2530;
   border-radius: 0 0 4px 4px;
   text-align: right;
 }

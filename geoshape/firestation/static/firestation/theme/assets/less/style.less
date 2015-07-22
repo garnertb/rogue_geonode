@@ -1931,13 +1931,13 @@ header{
 }
 
 .ct-footer--extended{
-  background-color: #333;
+  background-color: @brand-secondary;
 
   h1,h2,h3,h4,h5,h6{
     color: #fff;
-   // font-size: 14px;
     line-height: 18px;
-    font-weight: bold;
+    font-weight: 300;
+    opacity: 0.95;
   }
   span, li{
     font-size: 14px;
@@ -1946,6 +1946,7 @@ header{
   }
   span{
     opacity: 0.5;
+    font-weight: 100;
   }
   a{
     font-size: 14px;
@@ -2078,7 +2079,7 @@ header{
 }
 
 .ct-postFooter{
-  background-color: #191919;
+  background-color: #161A23;
   position: relative;
   color: #757575;
   font-size: 14px;
@@ -2139,7 +2140,7 @@ header{
   box-shadow:         0 0 3px 0 rgba(4, 4, 4, 0.3);
   .ct-imageBox{
     img{
-      background: @gray-lightest;
+      background: @gray-lighter;
       min-height: 150px;
       width: 100%;
     }
@@ -2149,7 +2150,7 @@ header{
     border-radius: 4px;
   }
   .ct-product--tilte{
-    font-weight: bold;
+    font-weight: 600;
   }
   .ct-product--price{
     color: #a2bf52;
@@ -2189,7 +2190,7 @@ header{
   .ct-product--tilte{
     line-height: 18px;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
   }
 
   .ct-product--price{
@@ -2209,7 +2210,7 @@ header{
   }
   .ct-product--meta{
     padding: 5px 20px;
-    background-color: #333333;
+    background-color: @brand-secondary;
     border-radius: 0 0 4px 4px;
     text-align: right;
     .ct-icons, .ct-text{
