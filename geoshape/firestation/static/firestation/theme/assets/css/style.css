@@ -10541,9 +10541,6 @@ you can use the generic selector below, but it's slower:
 #page-container {
   overflow: hidden;
 }
-.overflow-y-scroll {
-  overflow-y: scroll;
-}
 #map {
   min-height: 400px;
 }
@@ -10566,15 +10563,8 @@ you can use the generic selector below, but it's slower:
   background-size: cover;
   height: 800px;
 }
-.logo {
-  background: transparent url("../images/firecares-logo.png") left center no-repeat;
-  display: inline-block;
-  text-decoration: none;
-  min-width: 196px;
-  min-height: 60px;
-}
-.logo h1 {
-  text-indent: -999px;
+.overflow-y-scroll {
+  overflow-y: scroll;
 }
 .navbar {
   box-shadow: none;
@@ -10598,6 +10588,16 @@ you can use the generic selector below, but it's slower:
 }
 .ct-topBar i {
   margin-right: 2px;
+}
+.logo {
+  background: transparent url("../images/firecares-logo.png") left center no-repeat;
+  display: inline-block;
+  text-decoration: none;
+  min-width: 196px;
+  min-height: 60px;
+}
+.logo h1 {
+  text-indent: -999px;
 }
 .ct-mediaSection-inner {
   padding: 1.5em;
@@ -10629,6 +10629,9 @@ you can use the generic selector below, but it's slower:
 }
 .community-stats h4 span {
   font-size: 18px;
+}
+table.residential-fires {
+  font-size: 14px;
 }
 .ct-pageWrapper {
   z-index: 3;

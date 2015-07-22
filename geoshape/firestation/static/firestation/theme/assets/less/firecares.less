@@ -2,10 +2,6 @@
     overflow: hidden;
 }
 
-.overflow-y-scroll {
-    overflow-y: scroll;
-}
-
 #map {
   min-height: 400px;
 }
@@ -26,28 +22,21 @@
   min-height: 75px;
 }
 
+// Homepage - Header
 .header-image {
   background: url('/static/img/truck.jpg') no-repeat 50% 65%;
   background-size: cover;
   height: 800px;
 }
 
-// Theme Update & Overrides // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-// Logo & Branding
-.logo {
-    background: transparent url("../images/firecares-logo.png") left center no-repeat;
-    display: inline-block;
-    text-decoration: none;
-    min-width: 196px;
-    min-height: 60px;
-
-    h1 {
-      text-indent: -999px;
-    }
+// Utility & Helpers 
+.overflow-y-scroll {
+    overflow-y: scroll;
 }
 
-// Utility & Navbar Adjustments
+// Navigation and Utility Nav
+// ------------------------------------
+
 .navbar {
     box-shadow: none;
     font-weight: 300;
@@ -76,6 +65,19 @@
     }
 }
 
+// Logo & Branding
+.logo {
+    background: transparent url("../images/firecares-logo.png") left center no-repeat;
+    display: inline-block;
+    text-decoration: none;
+    min-width: 196px;
+    min-height: 60px;
+
+    h1 {
+      text-indent: -999px;
+    }
+}
+
 // MediaSection
 .ct-mediaSection-inner {
   padding: 1.5em;
@@ -95,8 +97,8 @@
     padding: 24px 0 24px 0;
 }
 
-
-// Department Detail View // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Department Detail View 
+// ------------------------------------
 
 // Community Stats
 .community-stats {
@@ -108,12 +110,17 @@
     margin-left: 55px;
   }
   h4 {
-      color: @brand-primary;
-      font-size: 35px;
-      margin-bottom: 5px;
+    color: @brand-primary;
+    font-size: 35px;
+    margin-bottom: 5px;
 
-      span {
-        font-size: 18px;
-      }
+    span {
+      font-size: 18px;
+    }
   }
+}
+
+// Table - Resedential Structure Fire 
+table.residential-fires{
+  font-size: 14px;
 }
