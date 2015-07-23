@@ -227,9 +227,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-lg-3 text-right">
+ <!--                <div class="col-md-4 col-lg-3 text-right">
                     <a href=""><i class="fa fa-times"></i>report abuse</a>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="ct-section--products">
@@ -374,133 +374,43 @@
                             </div>
                         <div class="ct-pagination text-center ct-u-marginBottom30">
                             <ul class="pagination">
-                            {% if firestations.has_previous %}
-                                    <li><a href="?page={{firestations.previous_page_number }}" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-angle-left"></i></span></a></li>
-                            {% endif %}
+                                {% if firestations.has_previous %}
+                                        <li><a href="?page={{firestations.previous_page_number }}" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-angle-left"></i></span></a></li>
+                                {% endif %}
 
-                                {% for p in firestations.paginator.page_range %}
-                                    {% if p != firestations.number %}
-                                         <li><a href="?page={{ p }}">{{ p }}</a></li>
-                                    {% else %}
-                                         <li class="active"><a href="?page={{ p }}">{{ p }}</a></li>
-                                    {% endif %}
-                                {% endfor %}
+                                    {% for p in firestations.paginator.page_range %}
+                                        {% if p != firestations.number %}
+                                             <li><a href="?page={{ p }}">{{ p }}</a></li>
+                                        {% else %}
+                                             <li class="active"><a href="?page={{ p }}">{{ p }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
 
-                            {% if firestations.has_next %}
-                                    <li><a href="?page={{firestations.next_page_number}}" aria-label="Next"><span aria-hidden="true"><i class="fa fa-angle-right"></i></span></a></li>
-                            {% endif %}
-                            </ul>
-                        </div>
-
-
-
+                                {% if firestations.has_next %}
+                                        <li><a href="?page={{firestations.next_page_number}}" aria-label="Next"><span aria-hidden="true"><i class="fa fa-angle-right"></i></span></a></li>
+                                {% endif %}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 col-lg-3">
                     <div class="ct-js-sidebar">
                         <div class="row">
-                            <div class="col-sm-6 col-md-12">
-                                <!-- <div class="widget ct-widget--calculator">
-                                    <div class="widget-inner">
-                                        <form role="form" class="ct-form--darkStyle">
-                                            <div class="form-group">
-                                                <div class="ct-form--label--type2">
-                                                    <div class="ct-u-displayTableVertical">
-                                                        <div class="ct-u-displayTableCell">
-                                                            <div class="ct-input-group-btn">
-                                                                <button class="btn btn-primary">
-                                                                    <i class="fa fa-calculator"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="ct-u-displayTableCell text-center">
-                                                            <span>Calculate Loan</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="ct-form--item">
-                                                    <label>Property Price ($)</label>
-                                                    <input type="text" required class="form-control input-lg" placeholder="Any">
-                                                </div>
-                                                <div class="ct-form--item">
-                                                    <label>Procent Down</label>
-                                                    <input type="text" required class="form-control input-lg" placeholder="Any">
-                                                </div>
-                                                <div class="ct-form--item">
-                                                    <label>Term (Years)</label>
-                                                    <input type="text" required class="form-control input-lg" placeholder="Any">
-                                                </div>
-                                                <div class="ct-form--item">
-                                                    <label>Interest Rate in %</label>
-                                                    <input type="text" required class="form-control input-lg" placeholder="Any">
-                                                </div>
-                                                <div class="ct-form--item last">
-                                                    <button type="submit" class="btn btn-warning">Calculate My Mortgage</button>
-                                                </div>
-                                            </div>
-                                        </form>
+                            <div class="col-sm-6 col-md-12 ct-u-marginBottom30">
+                                <!-- TODO: Programmer to sprinkle magic on the dynamic elements to make it functional -->
+                                <div class="gauge">
+                                    <div class="masked"></div>
+                                    <div class="inset"></div>
+                                    <div class="dial">
+                                        <div class="dial-inset"></div>
                                     </div>
-                                </div> -->
-                            </div>
-                            <div class="col-sm-6 col-md-12">
-                                <!-- <div class="widget">
-                                    <div class="widget-inner">
-                                        <h4>Contact agent</h4>
-                                        <div class="ct-personBox text-left">
-                                            <div class="ct-imagePerson">
-                                                <img src="{{STATIC_URL}}firestation/theme/assets/images/content/agents-1.jpg" alt="">
-                                                <ul class="ct-panel--socials list-inline list-unstyled">
-                                                    <li><a href="https://www.facebook.com/createITpl"><div class="ct-socials ct-socials--circle"><i class="fa fa-facebook"></i></div></a></li>
-                                                    <li><a href="https://twitter.com/createitpl"><div class="ct-socials ct-socials--circle"><i class="fa fa-twitter"></i></div></a></li>
-                                                    <li><a href="#"><div class="ct-socials ct-socials--circle"><i class="fa fa-instagram"></i></div></a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="ct-personContent">
-                                                <div class="ct-personName ct-u-paddingBottom10 ct-u-marginBottom20">
-                                                    <h5 class="ct-fw-600">Kristine Black</h5>
-                                                    <a href="">15 Properties</a>
-                                                </div>
-                                                <div class="ct-personDescription  ct-u-paddingBottom10 ct-u-marginBottom20">
-                                                    <ul class="list-unstyled ct-contactPerson">
-                                                        <li>
-                                                            <i class="fa fa-phone"></i>
-                                                            <span>(123) 456 7890</span>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fa fa-mobile"></i>
-                                                            <span>888 999 000</span>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fa fa-skype"></i> <a href="">kristine.black</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="ct-personContact">
-                                                    <div class="successMessage alert alert-success" style="display: none">
-                                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                                        Thank You!
-                                                    </div>
-                                                    <div class="errorMessage alert alert-danger" style="display: none">
-                                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                                        Ups! An error occured. Please try again later.
-                                                    </div>
-                                                    <form role="form" action="{{STATIC_URL}}firestation/theme/assets/form/send.php" method="post" class="contactForm validateIt" data-email-subject="Contact Form" data-show-errors="true">
-                                                        <div class="form-group">
-                                                            <div class="ct-form--item">
-                                                                <input id="contact_name" type="text" required class="form-control input-lg ct-u-marginBottom10" name="field[]" placeholder="Name">
-                                                                <input id="contact_email" type="email" required class="form-control input-lg ct-u-marginBottom10" name="field[]" placeholder="Email">
-                                                                <input id="contact_phone" type="tel" required class="form-control input-lg ct-u-marginBottom10" name="field[]" placeholder="Phone">
-                                                                <textarea id="contact_message" placeholder="Message" class="form-control input-lg" rows="4" name="field[]" required=""></textarea>
-                                                            </div>
-                                                            <button type="submit" class="btn btn-warning text-capitalize center-block">Send Message</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
+                                    <div class="needle"></div>
+                                </div>
+                                <div class="gauge-description">
+                                    <h4>Risk Score</h4>
+                                    <p>Number of fires based on socio-economic factors</p>
+                                </div>
                             </div>
                         </div>
                     </div>
